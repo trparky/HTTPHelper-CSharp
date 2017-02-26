@@ -32,10 +32,10 @@ namespace C_Sharp_Example
                 httpHelper.addHTTPHeader("myheader", "my header contents");
                 httpHelper.setHTTPCredentials("test", "test");
 
-                // This sets up our custom error handler delegate to be injected like a plugin into the HTTPHelper class instance.
-                    myCustomErrorHandlerDelegate setCustomErrorHandler = (Exception ex, httpHelper classInstance) => { Interaction.MsgBox(ex.Message); };
+                // This sets up our download status updating delegate to be injected like a plugin into the HTTPHelper class instance.
+                myCustomErrorHandlerDelegate setCustomErrorHandler = (Exception ex, httpHelper classInstance) => { Interaction.MsgBox(ex.Message); };
                     httpHelper.setCustomErrorHandler = setCustomErrorHandler;
-                // This sets up our custom error handler delegate to be injected like a plugin into the HTTPHelper class instance.
+                // This sets up our download status updating delegate to be injected like a plugin into the HTTPHelper class instance.
 
                 if (httpHelper.getWebData("https://www.toms-world.org/php/phpinfo.php", ref strServerResponse)) {
                     WebBrowser1.DocumentText = strServerResponse;
