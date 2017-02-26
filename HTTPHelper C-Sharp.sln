@@ -5,6 +5,11 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HTTPHelper C-Sharp", "HTTPHelper C-Sharp\HTTPHelper C-Sharp.csproj", "{FFF38998-9755-4124-BC66-A1EAC3258D0F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "C-Sharp Example", "C-Sharp Example\C-Sharp Example.csproj", "{7326ABAD-F3E2-4C82-82FC-698AF28A898A}"
+	ProjectSection(ProjectDependencies) = postProject
+		{FFF38998-9755-4124-BC66-A1EAC3258D0F} = {FFF38998-9755-4124-BC66-A1EAC3258D0F}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +20,10 @@ Global
 		{FFF38998-9755-4124-BC66-A1EAC3258D0F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FFF38998-9755-4124-BC66-A1EAC3258D0F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FFF38998-9755-4124-BC66-A1EAC3258D0F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7326ABAD-F3E2-4C82-82FC-698AF28A898A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7326ABAD-F3E2-4C82-82FC-698AF28A898A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7326ABAD-F3E2-4C82-82FC-698AF28A898A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7326ABAD-F3E2-4C82-82FC-698AF28A898A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
