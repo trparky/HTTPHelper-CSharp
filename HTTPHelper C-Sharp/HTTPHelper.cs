@@ -1,10 +1,7 @@
-﻿
-using Microsoft.VisualBasic;
+﻿using Microsoft.VisualBasic;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Security.Cryptography;
 
 public class FormFile
 {
@@ -218,8 +215,8 @@ class cookieDetails
 
 public class downloadStatusDetails
 {
-    public long remoteFileSize;
-    public long localFileSize;
+    public ulong remoteFileSize;
+    public ulong localFileSize;
     public short percentageDownloaded;
 }
 
@@ -233,7 +230,7 @@ class credentials
 public class httpHelper
 {
 
-    private const string classVersion = "1.266";
+    private const string classVersion = "1.270";
     private string strUserAgentString = null;
     private bool boolUseProxy = false;
     private bool boolUseSystemProxy = true;
@@ -464,33 +461,33 @@ public class httpHelper
 
         if (getData.Count != 0)
         {
-            foreach (KeyValuePair<string, string> item_loopVariable in getData)
+            foreach (KeyValuePair<string, string> item in getData)
             {
-                stringBuilder.AppendLine("GET Data | " + item_loopVariable.Key + "=" + item_loopVariable.Value);
+                stringBuilder.AppendLine("GET Data | " + item.Key + "=" + item.Value);
             }
         }
 
         if (postData.Count != 0)
         {
-            foreach (KeyValuePair<string, object> item_loopVariable in postData)
+            foreach (KeyValuePair<string, object> item in postData)
             {
-                stringBuilder.AppendLine("POST Data | " + item_loopVariable.Key.ToString() + "=" + item_loopVariable.Value.ToString());
+                stringBuilder.AppendLine("POST Data | " + item.Key.ToString() + "=" + item.Value.ToString());
             }
         }
 
         if (httpCookies.Count != 0)
         {
-            foreach (KeyValuePair<string, cookieDetails> item_loopVariable in httpCookies)
+            foreach (KeyValuePair<string, cookieDetails> item in httpCookies)
             {
-                stringBuilder.AppendLine("COOKIES | " + item_loopVariable.Key.ToString() + "=" + item_loopVariable.Value.cookieData);
+                stringBuilder.AppendLine("COOKIES | " + item.Key.ToString() + "=" + item.Value.cookieData);
             }
         }
 
         if (additionalHTTPHeaders.Count != 0)
         {
-            foreach (KeyValuePair<string, string> item_loopVariable in additionalHTTPHeaders)
+            foreach (KeyValuePair<string, string> item in additionalHTTPHeaders)
             {
-                stringBuilder.AppendLine("Additional HTTP Header | " + item_loopVariable.Key.ToString() + "=" + item_loopVariable.Value);
+                stringBuilder.AppendLine("Additional HTTP Header | " + item.Key.ToString() + "=" + item.Value);
             }
         }
 
@@ -533,7 +530,7 @@ public class httpHelper
     {
         if (boolHumanReadable)
         {
-            return fileSizeToHumanReadableFormat((long)remoteFileSize);
+            return fileSizeToHumanReadableFormat(remoteFileSize);
         }
         else
         {
@@ -569,7 +566,7 @@ public class httpHelper
     {
         if (boolHumanReadable)
         {
-            return fileSizeToHumanReadableFormat((long)currentFileSize);
+            return fileSizeToHumanReadableFormat(currentFileSize);
         }
         else
         {
@@ -945,9 +942,9 @@ public class httpHelper
     {
         downloadStatusDetails = new downloadStatusDetails
         {
-            remoteFileSize = (long)remoteFileSize,
+            remoteFileSize = remoteFileSize,
             percentageDownloaded = httpDownloadProgressPercentage,
-            localFileSize = (long)currentFileSize
+            localFileSize = currentFileSize
         };
         // Update the downloadStatusDetails.
 
@@ -1031,7 +1028,7 @@ public class httpHelper
             Stream responseStream = webResponse.GetResponseStream();
             // Gets the response stream.
 
-            long lngBytesReadFromInternet = responseStream.Read(dataBuffer, 0, dataBuffer.Length);
+            ulong lngBytesReadFromInternet = (ulong)responseStream.Read(dataBuffer, 0, dataBuffer.Length);
             // Reads some data from the HTTP stream into our data buffer.
             long oldCurrentFileSize = 0;
 
@@ -1050,7 +1047,7 @@ public class httpHelper
                 // Update the download percentage value.
                 downloadStatusUpdateInvoker();
 
-                lngBytesReadFromInternet = responseStream.Read(dataBuffer, 0, dataBuffer.Length);
+                lngBytesReadFromInternet = (ulong)responseStream.Read(dataBuffer, 0, dataBuffer.Length);
                 // Reads more data into our data buffer.
             }
 
@@ -1187,7 +1184,7 @@ public class httpHelper
             fileWriteStream = new FileStream(localFileName, FileMode.Create);
             // Creates a file write stream.
 
-            long lngBytesReadFromInternet = responseStream.Read(dataBuffer, 0, dataBuffer.Length);
+            ulong lngBytesReadFromInternet = (ulong)responseStream.Read(dataBuffer, 0, dataBuffer.Length);
             // Reads some data from the HTTP stream into our data buffer.
             long oldCurrentFileSize = 0;
 
@@ -1206,7 +1203,7 @@ public class httpHelper
                 // Update the download percentage value.
                 downloadStatusUpdateInvoker();
 
-                lngBytesReadFromInternet = responseStream.Read(dataBuffer, 0, dataBuffer.Length);
+                lngBytesReadFromInternet = (ulong)responseStream.Read(dataBuffer, 0, dataBuffer.Length);
                 // Reads more data into our data buffer.
             }
 
@@ -1845,7 +1842,7 @@ public class httpHelper
         return lastException;
     }
 
-    public string fileSizeToHumanReadableFormat(long size, bool roundToNearestWholeNumber = false)
+    public string fileSizeToHumanReadableFormat(ulong size, bool roundToNearestWholeNumber = false)
     {
         string result = null;
 
