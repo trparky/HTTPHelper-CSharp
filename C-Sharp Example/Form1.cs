@@ -163,11 +163,11 @@ namespace C_Sharp_Example
                 
                 myDownloadStatusRoutine myDownloadStatusUpdater = (downloadStatusDetails downloadStatusDetails) => {
                     if (httpHelper.enableMultiThreadedDownloadStatusUpdates) {
-                        Label1.Text = string.Format("Downloaded {0} of {1} ({2}/s)", httpHelper.fileSizeToHumanReadableFormat(downloadStatusDetails.localFileSize), httpHelper.fileSizeToHumanReadableFormat(downloadStatusDetails.remoteFileSize), httpHelper.fileSizeToHumanReadableFormat(downloadStatusDetails.localFileSize - (long)oldFileSize));
+                        Label1.Text = string.Format("Downloaded {0} of {1} ({2}/s)", httpHelper.fileSizeToHumanReadableFormat(downloadStatusDetails.localFileSize), httpHelper.fileSizeToHumanReadableFormat(downloadStatusDetails.remoteFileSize), httpHelper.fileSizeToHumanReadableFormat(downloadStatusDetails.localFileSize - oldFileSize));
                         oldFileSize = (ulong)downloadStatusDetails.localFileSize;
                     }
                     else {
-                        Label1.Text = string.Format("Downloaded {0} of {1}", httpHelper.fileSizeToHumanReadableFormat((long)downloadStatusDetails.localFileSize), httpHelper.fileSizeToHumanReadableFormat((long)downloadStatusDetails.remoteFileSize));
+                        Label1.Text = string.Format("Downloaded {0} of {1}", httpHelper.fileSizeToHumanReadableFormat(downloadStatusDetails.localFileSize), httpHelper.fileSizeToHumanReadableFormat(downloadStatusDetails.remoteFileSize));
                     }
 
                     Label2.Text = downloadStatusDetails.percentageDownloaded.ToString() + "%";
@@ -287,7 +287,7 @@ namespace C_Sharp_Example
                     downloadStatusDetails = httpHelper.getDownloadStatusDetails;
 
                     if (downloadStatusDetails != null) {
-                        Label1.Text = string.Format("Downloaded {0} of {1} ({2}/s)", httpHelper.fileSizeToHumanReadableFormat(downloadStatusDetails.localFileSize), httpHelper.fileSizeToHumanReadableFormat(downloadStatusDetails.remoteFileSize), httpHelper.fileSizeToHumanReadableFormat(downloadStatusDetails.localFileSize - (long)oldFileSize));
+                        Label1.Text = string.Format("Downloaded {0} of {1} ({2}/s)", httpHelper.fileSizeToHumanReadableFormat(downloadStatusDetails.localFileSize), httpHelper.fileSizeToHumanReadableFormat(downloadStatusDetails.remoteFileSize), httpHelper.fileSizeToHumanReadableFormat(downloadStatusDetails.localFileSize - oldFileSize));
 
                         oldFileSize = (ulong)downloadStatusDetails.localFileSize;
 
