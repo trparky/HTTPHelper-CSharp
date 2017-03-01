@@ -245,7 +245,7 @@ class credentials
 public class httpHelper
 {
 
-    private const string classVersion = "1.275";
+    private const string classVersion = "1.280";
     private string strUserAgentString = null;
     private bool boolUseProxy = false;
     private bool boolUseSystemProxy = true;
@@ -1134,7 +1134,7 @@ public class httpHelper
                 }
                 else if (ex2.Status == System.Net.WebExceptionStatus.NameResolutionFailure)
                 {
-                    string strDomainName = System.Text.RegularExpressions.Regex.Match(lastAccessedURL, "http://(.*)/", System.Text.RegularExpressions.RegexOptions.Singleline).Groups[1].Value;
+                    string strDomainName = System.Text.RegularExpressions.Regex.Match(lastAccessedURL, "(?:http(?:s){0,1}://){0,1}(.*)/", System.Text.RegularExpressions.RegexOptions.Singleline).Groups[1].Value;
                     lastException = new dnsLookupError(string.Format("There was an error while looking up the DNS records for the domain name {0}{1}{0}.", "\"", strDomainName), ex2);
                     throw lastException;
                     return false;
@@ -1303,7 +1303,7 @@ public class httpHelper
                 }
                 else if (ex2.Status == System.Net.WebExceptionStatus.NameResolutionFailure)
                 {
-                    string strDomainName = System.Text.RegularExpressions.Regex.Match(lastAccessedURL, "http://(.*)/", System.Text.RegularExpressions.RegexOptions.Singleline).Groups[1].Value;
+                    string strDomainName = System.Text.RegularExpressions.Regex.Match(lastAccessedURL, "(?:http(?:s){0,1}://){0,1}(.*)/", System.Text.RegularExpressions.RegexOptions.Singleline).Groups[1].Value;
                     lastException = new dnsLookupError(string.Format("There was an error while looking up the DNS records for the domain name {0}{1}{0}.", "\"", strDomainName), ex2);
                     throw lastException;
                     return false;
@@ -1409,7 +1409,7 @@ public class httpHelper
                 }
                 else if (ex2.Status == System.Net.WebExceptionStatus.NameResolutionFailure)
                 {
-                    string strDomainName = System.Text.RegularExpressions.Regex.Match(lastAccessedURL, "http://(.*)/", System.Text.RegularExpressions.RegexOptions.Singleline).Groups[1].Value;
+                    string strDomainName = System.Text.RegularExpressions.Regex.Match(lastAccessedURL, "(?:http(?:s){0,1}://){0,1}(.*)/", System.Text.RegularExpressions.RegexOptions.Singleline).Groups[1].Value;
                     lastException = new dnsLookupError(string.Format("There was an error while looking up the DNS records for the domain name {0}{1}{0}.", "\"", strDomainName), ex2);
                     throw lastException;
                     return false;
@@ -1514,7 +1514,7 @@ public class httpHelper
                 }
                 else if (ex2.Status == System.Net.WebExceptionStatus.NameResolutionFailure)
                 {
-                    string strDomainName = System.Text.RegularExpressions.Regex.Match(lastAccessedURL, "http://(.*)/", System.Text.RegularExpressions.RegexOptions.Singleline).Groups[1].Value;
+                    string strDomainName = System.Text.RegularExpressions.Regex.Match(lastAccessedURL, "(?:http(?:s){0,1}://){0,1}(.*)/", System.Text.RegularExpressions.RegexOptions.Singleline).Groups[1].Value;
                     lastException = new dnsLookupError(string.Format("There was an error while looking up the DNS records for the domain name {0}{1}{0}.", "\"", strDomainName), ex2);
                     throw lastException;
                     return false;
@@ -1690,7 +1690,7 @@ public class httpHelper
                 }
                 else if (ex2.Status == System.Net.WebExceptionStatus.NameResolutionFailure)
                 {
-                    string strDomainName = System.Text.RegularExpressions.Regex.Match(lastAccessedURL, "http://(.*)/", System.Text.RegularExpressions.RegexOptions.Singleline).Groups[1].Value;
+                    string strDomainName = System.Text.RegularExpressions.Regex.Match(lastAccessedURL, "(?:http(?:s){0,1}://){0,1}(.*)/", System.Text.RegularExpressions.RegexOptions.Singleline).Groups[1].Value;
                     lastException = new dnsLookupError(string.Format("There was an error while looking up the DNS records for the domain name {0}{1}{0}.", "\"", strDomainName), ex2);
                     throw lastException;
                     return false;
