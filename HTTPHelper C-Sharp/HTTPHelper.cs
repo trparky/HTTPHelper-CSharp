@@ -119,6 +119,21 @@ public class proxyConfigurationErrorException : Exception
     }
 }
 
+public class dnsLookupError : Exception
+{
+    public dnsLookupError()
+    {
+    }
+
+    public dnsLookupError(string message) : base(message)
+    {
+    }
+
+    public dnsLookupError(string message, Exception inner) : base(message, inner)
+    {
+    }
+}
+
 public class noHTTPServerResponseHeadersFoundException : Exception
 {
 
@@ -230,7 +245,7 @@ class credentials
 public class httpHelper
 {
 
-    private const string classVersion = "1.270";
+    private const string classVersion = "1.275";
     private string strUserAgentString = null;
     private bool boolUseProxy = false;
     private bool boolUseSystemProxy = true;
@@ -996,6 +1011,7 @@ public class httpHelper
     /// <exception cref="Exception">If this function throws a general Exception, something really went wrong; something that the function normally doesn't handle.</exception>
     /// <exception cref="httpProtocolException">This exception is thrown if the server responds with an HTTP Error.</exception>
     /// <exception cref="sslErrorException">If this function throws an sslErrorException, an error occurred while negotiating an SSL connection.</exception>
+    /// <exception cref="dnsLookupError">If this function throws a dnsLookupError exception it means that the domain name wasn't able to be resolved properly.</exception>
     public bool downloadFile(string fileDownloadURL, ref MemoryStream memStream, bool throwExceptionIfError = true)
     {
         System.Net.HttpWebRequest httpWebRequest = null;
@@ -1116,6 +1132,13 @@ public class httpHelper
                     throw lastException;
                     return false;
                 }
+                else if (ex2.Status == System.Net.WebExceptionStatus.NameResolutionFailure)
+                {
+                    string strDomainName = System.Text.RegularExpressions.Regex.Match(lastAccessedURL, "http://(.*)/", System.Text.RegularExpressions.RegexOptions.Singleline).Groups[1].Value;
+                    lastException = new dnsLookupError(string.Format("There was an error while looking up the DNS records for the domain name {0}{1}{0}.", "\"", strDomainName), ex2);
+                    throw lastException;
+                    return false;
+                }
 
                 lastException = new System.Net.WebException(ex.Message, ex2);
                 throw lastException;
@@ -1136,6 +1159,7 @@ public class httpHelper
     /// <exception cref="Exception">If this function throws a general Exception, something really went wrong; something that the function normally doesn't handle.</exception>
     /// <exception cref="httpProtocolException">This exception is thrown if the server responds with an HTTP Error.</exception>
     /// <exception cref="sslErrorException">If this function throws an sslErrorException, an error occurred while negotiating an SSL connection.</exception>
+    /// <exception cref="dnsLookupError">If this function throws a dnsLookupError exception it means that the domain name wasn't able to be resolved properly.</exception>
     public bool downloadFile(string fileDownloadURL, string localFileName, bool throwExceptionIfLocalFileExists, bool throwExceptionIfError = true)
     {
         FileStream fileWriteStream = null;
@@ -1277,6 +1301,13 @@ public class httpHelper
                     throw lastException;
                     return false;
                 }
+                else if (ex2.Status == System.Net.WebExceptionStatus.NameResolutionFailure)
+                {
+                    string strDomainName = System.Text.RegularExpressions.Regex.Match(lastAccessedURL, "http://(.*)/", System.Text.RegularExpressions.RegexOptions.Singleline).Groups[1].Value;
+                    lastException = new dnsLookupError(string.Format("There was an error while looking up the DNS records for the domain name {0}{1}{0}.", "\"", strDomainName), ex2);
+                    throw lastException;
+                    return false;
+                }
 
                 lastException = new System.Net.WebException(ex.Message, ex2);
                 throw lastException;
@@ -1295,6 +1326,7 @@ public class httpHelper
     /// <exception cref="Exception">If this function throws a general Exception, something really went wrong; something that the function normally doesn't handle.</exception>
     /// <exception cref="httpProtocolException">This exception is thrown if the server responds with an HTTP Error.</exception>
     /// <exception cref="sslErrorException">If this function throws an sslErrorException, an error occurred while negotiating an SSL connection.</exception>
+    /// <exception cref="dnsLookupError">If this function throws a dnsLookupError exception it means that the domain name wasn't able to be resolved properly.</exception>
     /// <example>httpPostObject.getWebData("http://www.myserver.com/mywebpage", httpResponseText)</example>
     /// <param name="throwExceptionIfError">Normally True. If True this function will throw an exception if an error occurs. If set to False, the function simply returns False if an error occurs; this is a much more simpler way to handle errors.</param>
     /// <param name="shortRangeTo">This controls how much data is downloaded from the server.</param>
@@ -1375,6 +1407,13 @@ public class httpHelper
                     throw lastException;
                     return false;
                 }
+                else if (ex2.Status == System.Net.WebExceptionStatus.NameResolutionFailure)
+                {
+                    string strDomainName = System.Text.RegularExpressions.Regex.Match(lastAccessedURL, "http://(.*)/", System.Text.RegularExpressions.RegexOptions.Singleline).Groups[1].Value;
+                    lastException = new dnsLookupError(string.Format("There was an error while looking up the DNS records for the domain name {0}{1}{0}.", "\"", strDomainName), ex2);
+                    throw lastException;
+                    return false;
+                }
 
                 lastException = new System.Net.WebException(ex.Message, ex2);
                 throw lastException;
@@ -1395,6 +1434,7 @@ public class httpHelper
     /// <exception cref="Exception">If this function throws a general Exception, something really went wrong; something that the function normally doesn't handle.</exception>
     /// <exception cref="httpProtocolException">This exception is thrown if the server responds with an HTTP Error.</exception>
     /// <exception cref="sslErrorException">If this function throws an sslErrorException, an error occurred while negotiating an SSL connection.</exception>
+    /// <exception cref="dnsLookupError">If this function throws a dnsLookupError exception it means that the domain name wasn't able to be resolved properly.</exception>
     /// <example>httpPostObject.getWebData("http://www.myserver.com/mywebpage", httpResponseText)</example>
     /// <param name="throwExceptionIfError">Normally True. If True this function will throw an exception if an error occurs. If set to False, the function simply returns False if an error occurs; this is a much more simpler way to handle errors.</param>
     public bool getWebData(string url, ref string httpResponseText, bool throwExceptionIfError = true)
@@ -1472,6 +1512,13 @@ public class httpHelper
                     throw lastException;
                     return false;
                 }
+                else if (ex2.Status == System.Net.WebExceptionStatus.NameResolutionFailure)
+                {
+                    string strDomainName = System.Text.RegularExpressions.Regex.Match(lastAccessedURL, "http://(.*)/", System.Text.RegularExpressions.RegexOptions.Singleline).Groups[1].Value;
+                    lastException = new dnsLookupError(string.Format("There was an error while looking up the DNS records for the domain name {0}{1}{0}.", "\"", strDomainName), ex2);
+                    throw lastException;
+                    return false;
+                }
 
                 lastException = new System.Net.WebException(ex.Message, ex2);
                 throw lastException;
@@ -1493,6 +1540,7 @@ public class httpHelper
     /// <exception cref="Exception">If this function throws a general Exception, something really went wrong; something that the function normally doesn't handle.</exception>
     /// <exception cref="httpProtocolException">This exception is thrown if the server responds with an HTTP Error.</exception>
     /// <exception cref="sslErrorException">If this function throws an sslErrorException, an error occurred while negotiating an SSL connection.</exception>
+    /// <exception cref="dnsLookupError">If this function throws a dnsLookupError exception it means that the domain name wasn't able to be resolved properly.</exception>
     /// <example>httpPostObject.uploadData("http://www.myserver.com/myscript", httpResponseText)</example>
     /// <param name="throwExceptionIfError">Normally True. If True this function will throw an exception if an error occurs. If set to False, the function simply returns False if an error occurs; this is a much more simpler way to handle errors.</param>
     public bool uploadData(string url, ref string httpResponseText, bool throwExceptionIfError = false)
@@ -1637,6 +1685,13 @@ public class httpHelper
                 else if (ex2.Status == System.Net.WebExceptionStatus.TrustFailure)
                 {
                     lastException = new sslErrorException("There was an error establishing an SSL connection.", ex2);
+                    throw lastException;
+                    return false;
+                }
+                else if (ex2.Status == System.Net.WebExceptionStatus.NameResolutionFailure)
+                {
+                    string strDomainName = System.Text.RegularExpressions.Regex.Match(lastAccessedURL, "http://(.*)/", System.Text.RegularExpressions.RegexOptions.Singleline).Groups[1].Value;
+                    lastException = new dnsLookupError(string.Format("There was an error while looking up the DNS records for the domain name {0}{1}{0}.", "\"", strDomainName), ex2);
                     throw lastException;
                     return false;
                 }
