@@ -245,7 +245,7 @@ class credentials
 public class httpHelper
 {
 
-    private const string classVersion = "1.280";
+    private const string classVersion = "1.285";
     private string strUserAgentString = null;
     private bool boolUseProxy = false;
     private bool boolUseSystemProxy = true;
@@ -942,11 +942,11 @@ public class httpHelper
             System.Threading.Thread.Sleep(_intDownloadThreadSleepTime);
             goto beginAgain;
         }
-        catch (System.Threading.ThreadAbortException ex)
+        catch (System.Threading.ThreadAbortException)
         {
             // Does nothing
         }
-        catch (System.Reflection.TargetInvocationException ex2)
+        catch (System.Reflection.TargetInvocationException)
         {
             // Does nothing
         }
@@ -996,7 +996,7 @@ public class httpHelper
                 downloadStatusUpdaterThread = null;
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             // Does nothing
         }
@@ -1046,7 +1046,6 @@ public class httpHelper
 
             ulong lngBytesReadFromInternet = (ulong)responseStream.Read(dataBuffer, 0, dataBuffer.Length);
             // Reads some data from the HTTP stream into our data buffer.
-            long oldCurrentFileSize = 0;
 
             // We keep looping until all of the data has been downloaded.
             while (lngBytesReadFromInternet != 0)
@@ -1077,7 +1076,7 @@ public class httpHelper
 
             return true;
         }
-        catch (System.Threading.ThreadAbortException ex)
+        catch (System.Threading.ThreadAbortException)
         {
             abortDownloadStatusUpdaterThread();
 
@@ -1210,7 +1209,6 @@ public class httpHelper
 
             ulong lngBytesReadFromInternet = (ulong)responseStream.Read(dataBuffer, 0, dataBuffer.Length);
             // Reads some data from the HTTP stream into our data buffer.
-            long oldCurrentFileSize = 0;
 
             // We keep looping until all of the data has been downloaded.
             while (lngBytesReadFromInternet != 0)
@@ -1246,7 +1244,7 @@ public class httpHelper
 
             return true;
         }
-        catch (System.Threading.ThreadAbortException ex)
+        catch (System.Threading.ThreadAbortException)
         {
             abortDownloadStatusUpdaterThread();
 
@@ -1983,7 +1981,7 @@ public class httpHelper
                 return false;
             }
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             return false;
         }
