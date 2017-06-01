@@ -7,3 +7,4 @@
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE1006:Naming Styles")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0017:Simplify object initialization")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0020:Use pattern matching")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "CS0162:Unreachable code detected")]
