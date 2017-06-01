@@ -47,10 +47,10 @@ namespace C_Sharp_Example
                     }
                 }
             }
-            catch (httpProtocolException ex) {
+            catch (httpProtocolException) {
                 // You can handle httpProtocolExceptions different than normal exceptions with this code.
             }
-            catch (System.Net.WebException ex) {
+            catch (System.Net.WebException) {
                 // You can handle web exceptions different than normal exceptions with this code.
             }
             catch (Exception ex) {
@@ -91,11 +91,11 @@ namespace C_Sharp_Example
                     //Next
                 }
             }
-            catch (httpProtocolException ex)
+            catch (httpProtocolException)
             {
                 // You can handle httpProtocolExceptions different than normal exceptions with this code.
             }
-            catch (System.Net.WebException ex)
+            catch (System.Net.WebException)
             {
                 // You can handle web exceptions different than normal exceptions with this code.
             }
@@ -164,7 +164,7 @@ namespace C_Sharp_Example
                 myDownloadStatusRoutine myDownloadStatusUpdater = (downloadStatusDetails downloadStatusDetails) => {
                     if (httpHelper.enableMultiThreadedDownloadStatusUpdates) {
                         Label1.Text = string.Format("Downloaded {0} of {1} ({2}/s)", httpHelper.fileSizeToHumanReadableFormat(downloadStatusDetails.localFileSize), httpHelper.fileSizeToHumanReadableFormat(downloadStatusDetails.remoteFileSize), httpHelper.fileSizeToHumanReadableFormat(downloadStatusDetails.localFileSize - oldFileSize));
-                        oldFileSize = (ulong)downloadStatusDetails.localFileSize;
+                        oldFileSize = downloadStatusDetails.localFileSize;
                     }
                     else {
                         Label1.Text = string.Format("Downloaded {0} of {1}", httpHelper.fileSizeToHumanReadableFormat(downloadStatusDetails.localFileSize), httpHelper.fileSizeToHumanReadableFormat(downloadStatusDetails.remoteFileSize));
@@ -209,7 +209,7 @@ namespace C_Sharp_Example
                         Interaction.MsgBox(ex.Message + " " + ex.StackTrace);
 
                     }
-                    catch (System.Threading.ThreadAbortException ex) {
+                    catch (System.Threading.ThreadAbortException) {
                         btnDownloadFile.Enabled = true;
                         btnDownloadFile2.Enabled = true;
                         btnStopDownload.Enabled = false;
@@ -267,7 +267,7 @@ namespace C_Sharp_Example
                         Interaction.MsgBox(ex.Message + " " + ex.StackTrace);
 
                     }
-                    catch (System.Threading.ThreadAbortException ex) {
+                    catch (System.Threading.ThreadAbortException) {
                         btnDownloadFile.Enabled = true;
                         btnDownloadFile2.Enabled = true;
                         btnStopDownload.Enabled = false;
