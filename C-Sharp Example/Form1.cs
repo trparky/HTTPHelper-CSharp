@@ -7,8 +7,10 @@ namespace C_Sharp_Example
 {
     public partial class Form1 : Form
     {
+        // These are the delegates that we will be passing to the HTTPHelper class instance.
         delegate void myCustomErrorHandlerDelegate(Exception ex, httpHelper classInstance);
         delegate void myDownloadStatusRoutine(downloadStatusDetails downloadStatusDetails);
+
         System.Threading.Thread downloadThread;
         System.Threading.Thread statusThread;
         ulong oldFileSize = 0;
@@ -34,7 +36,7 @@ namespace C_Sharp_Example
 
                 // This sets up our download status updating delegate to be injected like a plugin into the HTTPHelper class instance.
                 myCustomErrorHandlerDelegate setCustomErrorHandler = (Exception ex, httpHelper classInstance) => { Interaction.MsgBox(ex.Message); };
-                    httpHelper.setCustomErrorHandler = setCustomErrorHandler;
+                httpHelper.setCustomErrorHandler = setCustomErrorHandler;
                 // This sets up our download status updating delegate to be injected like a plugin into the HTTPHelper class instance.
 
                 if (httpHelper.getWebData("https://www.toms-world.org/php/phpinfo.php", ref strServerResponse)) {
@@ -161,6 +163,7 @@ namespace C_Sharp_Example
                 httpHelper.enableMultiThreadedDownloadStatusUpdates = true;
                 ulong oldFileSize = 0;
                 
+                // First we create our delegate.
                 myDownloadStatusRoutine myDownloadStatusUpdater = (downloadStatusDetails downloadStatusDetails) => {
                     if (httpHelper.enableMultiThreadedDownloadStatusUpdates) {
                         Label1.Text = string.Format("Downloaded {0} of {1} ({2}/s)", httpHelper.fileSizeToHumanReadableFormat(downloadStatusDetails.localFileSize), httpHelper.fileSizeToHumanReadableFormat(downloadStatusDetails.remoteFileSize), httpHelper.fileSizeToHumanReadableFormat(downloadStatusDetails.localFileSize - oldFileSize));
@@ -173,7 +176,7 @@ namespace C_Sharp_Example
                     Label2.Text = downloadStatusDetails.percentageDownloaded.ToString() + "%";
                     ProgressBar1.Value = downloadStatusDetails.percentageDownloaded;
                 };
-                httpHelper.setDownloadStatusUpdateRoutine = myDownloadStatusUpdater;
+                httpHelper.setDownloadStatusUpdateRoutine = myDownloadStatusUpdater; // And now we pass our delegate to the HTTPHelper class instance.
 
                 // Now we need to create our download thread.
                 downloadThread = new System.Threading.Thread(() => {
