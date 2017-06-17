@@ -33,6 +33,7 @@ namespace C_Sharp_Example
                 httpHelper.addHTTPCookie("mycookie", "my cookie contents", "www.toms-world.org", "/");
                 httpHelper.addHTTPHeader("myheader", "my header contents");
                 httpHelper.setHTTPCredentials("test", "test");
+                httpHelper.setURLPreProcessor = (string strURLInput) => { System.Diagnostics.Debug.WriteLine("strURLInput = " + strURLInput); return strURLInput; };
 
                 // This sets up our download status updating delegate to be injected like a plugin into the HTTPHelper class instance.
                 myCustomErrorHandlerDelegate setCustomErrorHandler = (Exception ex, httpHelper classInstance) => { Interaction.MsgBox(ex.Message); };
@@ -76,6 +77,7 @@ namespace C_Sharp_Example
                 httpHelper.addPOSTData("major", "3");
                 httpHelper.addPOSTData("minor", "9");
                 httpHelper.addPOSTData("build", "6");
+                httpHelper.setURLPreProcessor = (string strURLInput) => { System.Diagnostics.Debug.WriteLine("strURLInput = " + strURLInput); return strURLInput; };
 
                 if (httpHelper.getWebData("https://www.toms-world.org/httphelper.php", ref strServerResponse))
                 {
