@@ -124,7 +124,7 @@ class credentials {
 
 /// <summary>Allows you to easily POST and upload files to a remote HTTP server without you, the programmer, knowing anything about how it all works. This class does it all for you. It handles adding a User Agent String, additional HTTP Request Headers, string data to your HTTP POST data, and files to be uploaded in the HTTP POST data.</summary>
 public class httpHelper {
-    private const string classVersion = "1.285";
+    private const string classVersion = "1.295";
     private string strUserAgentString = null;
     private bool boolUseProxy = false;
     private bool boolUseSystemProxy = true;
@@ -770,7 +770,7 @@ public class httpHelper {
             while (lngBytesReadFromInternet != 0) {
                 // We calculate the current file size by adding the amount of data that we've so far
                 // downloaded from the server repeatedly to a variable called "currentFileSize".
-                currentFileSize += (ulong)lngBytesReadFromInternet;
+                currentFileSize += lngBytesReadFromInternet;
 
                 memStream.Write(dataBuffer, 0, (int)lngBytesReadFromInternet);
                 // Writes the data directly to disk.
@@ -911,7 +911,7 @@ public class httpHelper {
             while (lngBytesReadFromInternet != 0) {
                 // We calculate the current file size by adding the amount of data that we've so far
                 // downloaded from the server repeatedly to a variable called "currentFileSize".
-                currentFileSize += (ulong)lngBytesReadFromInternet;
+                currentFileSize += lngBytesReadFromInternet;
 
                 fileWriteStream.Write(dataBuffer, 0, (int)lngBytesReadFromInternet);
                 // Writes the data directly to disk.
