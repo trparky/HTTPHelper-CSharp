@@ -124,7 +124,7 @@ class credentials {
 
 /// <summary>Allows you to easily POST and upload files to a remote HTTP server without you, the programmer, knowing anything about how it all works. This class does it all for you. It handles adding a User Agent String, additional HTTP Request Headers, string data to your HTTP POST data, and files to be uploaded in the HTTP POST data.</summary>
 public class httpHelper {
-    private const string classVersion = "1.295";
+    private const string classVersion = "1.300";
     private string strUserAgentString = null;
     private bool boolUseProxy = false;
     private bool boolUseSystemProxy = true;
@@ -460,7 +460,7 @@ public class httpHelper {
     /// <param name="throwExceptionIfDataAlreadyExists">This tells the function if it should throw an exception if the data already exists in the POST data.</param>
     /// <exception cref="dataAlreadyExistsException">If this function throws a dataAlreadyExistsException, you forgot to add some data for your POST variable.</exception>
     public void addPOSTData(string strName, string strValue, bool throwExceptionIfDataAlreadyExists = false) {
-        if (strValue.Trim() == null) {
+        if (String.IsNullOrEmpty(strValue.Trim())) {
             lastException = new dataMissingException(string.Format("Data was missing for the {0}{1}{0} POST variable.", "\"", strName));
             throw lastException;
         }
@@ -480,7 +480,7 @@ public class httpHelper {
     /// <param name="strValue">The value of the data to post.</param>
     /// <exception cref="dataAlreadyExistsException">If this function throws a dataAlreadyExistsException, you forgot to add some data for your POST variable.</exception>
     public void addGETData(string strName, string strValue, bool throwExceptionIfDataAlreadyExists = false) {
-        if (strValue.Trim() == null) {
+        if (String.IsNullOrEmpty(strValue.Trim())) {
             lastException = new dataMissingException(string.Format("Data was missing for the {0}{1}{0} GET variable.", "\"", strName));
             throw lastException;
         }
@@ -624,7 +624,7 @@ public class httpHelper {
                 localFilePath = strLocalFilePath,
                 remoteFileName = strRemoteFileName
             };
-            if (strContentType == null) {
+            if (String.IsNullOrEmpty(strContentType)) {
                 string contentType = null;
                 Microsoft.Win32.RegistryKey regPath = Microsoft.Win32.Registry.ClassesRoot.OpenSubKey(fileInfo.Extension.ToLower(), false);
 
@@ -634,7 +634,7 @@ public class httpHelper {
                 }
                 else contentType = regPath.GetValue("Content Type", null).ToString();
 
-                if (contentType == null) {
+                if (String.IsNullOrEmpty(contentType)) {
                     lastException = new noMimeTypeFoundException("No MIME Type found for " + fileInfo.Extension.ToLower());
                     throw lastException;
                 }
@@ -1236,7 +1236,7 @@ public class httpHelper {
                     if (entry.Value is FormFile) {
                         formFileObjectInstance = (FormFile)entry.Value;
 
-                        if (formFileObjectInstance.remoteFileName == null) {
+                        if (String.IsNullOrEmpty(formFileObjectInstance.remoteFileName)) {
                             fileInfo = new FileInfo(formFileObjectInstance.localFilePath);
 
                             header = string.Format("Content-Disposition: form-data; name={0}{1}{0}; filename={0}{2}{0}", "\"", entry.Key, fileInfo.Name);
