@@ -1475,27 +1475,24 @@ public class httpHelper {
 
     public string fileSizeToHumanReadableFormat(ulong size, bool roundToNearestWholeNumber = false) {
         string result = null;
+        short shortRoundNumber;
+        if (roundToNearestWholeNumber) { shortRoundNumber = 0; } else { shortRoundNumber = 2; }
 
         if (size <= (Math.Pow(2, 10))) result = size + " Bytes";
         else if (size > (Math.Pow(2, 10)) & size <= (Math.Pow(2, 20))) {
-            if (roundToNearestWholeNumber)result = Math.Round(size / (Math.Pow(2, 10)), 0) + " KBs";
-            else result = Math.Round(size / (Math.Pow(2, 10)), 2) + " KBs";
+            result = Math.Round(size / (Math.Pow(2, 10)), shortRoundNumber) + " KBs";
         }
         else if (size > (Math.Pow(2, 20)) & size <= (Math.Pow(2, 30))) {
-            if (roundToNearestWholeNumber) result = Math.Round(size / (Math.Pow(2, 20)), 0) + " MBs";
-            else result = Math.Round(size / (Math.Pow(2, 20)), 2) + " MBs";
+            result = Math.Round(size / (Math.Pow(2, 20)), shortRoundNumber) + " MBs";
         }
         else if (size > (Math.Pow(2, 30)) & size <= (Math.Pow(2, 40))) {
-            if (roundToNearestWholeNumber) result = Math.Round(size / (Math.Pow(2, 30)), 0) + " GBs";
-            else result = Math.Round(size / (Math.Pow(2, 30)), 2) + " GBs";
+            result = Math.Round(size / (Math.Pow(2, 30)), shortRoundNumber) + " GBs";
         }
         else if (size > (Math.Pow(2, 40)) & size <= (Math.Pow(2, 50))) {
-            if (roundToNearestWholeNumber) result = Math.Round(size / (Math.Pow(2, 40)), 0) + " TBs";
-            else result = Math.Round(size / (Math.Pow(2, 40)), 2) + " TBs";
+            result = Math.Round(size / (Math.Pow(2, 40)), shortRoundNumber) + " TBs";
         }
         else if (size > (Math.Pow(2, 50)) & size <= (Math.Pow(2, 60))) {
-            if (roundToNearestWholeNumber) result = Math.Round(size / (Math.Pow(2, 50)), 0) + " PBs";
-            else result = Math.Round(size / (Math.Pow(2, 50)), 2) + " PBs";
+            result = Math.Round(size / (Math.Pow(2, 50)), shortRoundNumber) + " PBs";
         }
         else result = "(None)";
 
