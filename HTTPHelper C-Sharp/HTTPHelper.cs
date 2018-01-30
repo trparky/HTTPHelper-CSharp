@@ -380,12 +380,8 @@ public class httpHelper {
     /// <param name="boolHumanReadable">Optional setting, normally set to True. Tells the function if it should transform the Integer representing the file size into a human readable format.</param>
     /// <returns>Either a String or a Long containing the remote file size.</returns>
     public object getHTTPDownloadRemoteFileSize(bool boolHumanReadable = true) {
-        if (boolHumanReadable) {
-            return fileSizeToHumanReadableFormat(remoteFileSize);
-        }
-        else {
-            return remoteFileSize;
-        }
+        if (boolHumanReadable) return fileSizeToHumanReadableFormat(remoteFileSize);
+        else return remoteFileSize;
     }
 
     /// <summary>This returns the SSL certificate details for the last HTTP request made by this Class instance.</summary>
@@ -503,12 +499,7 @@ public class httpHelper {
     /// <exception cref="dataAlreadyExistsException">If this function throws an dataAlreadyExistsException, it means that this Class instance already has an Additional HTTP Header of that name in the Class instance.</exception>
     public void addHTTPHeader(string strHeaderName, string strHeaderContents, bool urlEncodeHeaderContent = false) {
         if (!doesAdditionalHeaderExist(strHeaderName)) {
-            if (urlEncodeHeaderContent) {
-                additionalHTTPHeaders.Add(strHeaderName.ToLower(), System.Web.HttpUtility.UrlEncode(strHeaderContents));
-            }
-            else {
-                additionalHTTPHeaders.Add(strHeaderName.ToLower(), strHeaderContents);
-            }
+            additionalHTTPHeaders.Add(strHeaderName.ToLower(), urlEncodeHeaderContent ? System.Web.HttpUtility.UrlEncode(strHeaderContents) : strHeaderContents);
         }
         else {
             lastException = new dataAlreadyExistsException(string.Format("The additional HTTP Header named {0}{1}{0} already exists in the Additional HTTP Headers settings for this Class instance.", "\"", strHeaderName));
@@ -530,9 +521,7 @@ public class httpHelper {
                 cookiePath = strCookiePath
             };
 
-            if (urlEncodeHeaderContent) cookieDetails.cookieData = System.Web.HttpUtility.UrlEncode(strCookieValue);
-            else cookieDetails.cookieData = strCookieValue;
-
+            cookieDetails.cookieData = urlEncodeHeaderContent ? System.Web.HttpUtility.UrlEncode(strCookieValue) : strCookieValue;
             httpCookies.Add(strCookieName.ToLower(), cookieDetails);
         }
         else {
@@ -554,9 +543,7 @@ public class httpHelper {
                 cookiePath = "/"
             };
 
-            if (urlEncodeHeaderContent) cookieDetails.cookieData = System.Web.HttpUtility.UrlEncode(strCookieValue);
-            else cookieDetails.cookieData = strCookieValue;
-
+            cookieDetails.cookieData = urlEncodeHeaderContent ? System.Web.HttpUtility.UrlEncode(strCookieValue) : strCookieValue;
             httpCookies.Add(strCookieName.ToLower(), cookieDetails);
         }
         else {
@@ -1020,7 +1007,7 @@ public class httpHelper {
             if (urlPreProcessor != null) url = urlPreProcessor(url);
             lastAccessedURL = url;
 
-            if (getData.Count != 0) url += "?" + this.getGETDataString();
+            if (getData.Count != 0) url += "?" + getGETDataString();
 
             httpWebRequest = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(url);
             httpWebRequest.AddRange(shortRangeFrom, shortRangeTo);
@@ -1206,7 +1193,7 @@ public class httpHelper {
                 lastException = new dataMissingException("Your HTTP Request contains no POST data. Please add some data to POST before calling this function.");
                 throw lastException;
             }
-            if (getData.Count != 0) url += "?" + this.getGETDataString();
+            if (getData.Count != 0) url += "?" + getGETDataString();
 
             string boundary = "---------------------------" + DateTime.Now.Ticks.ToString("x");
             byte[] boundaryBytes = System.Text.Encoding.ASCII.GetBytes((Convert.ToString(Constants.vbCr + Constants.vbLf + "--") + boundary) + Constants.vbCr + Constants.vbLf);
@@ -1338,10 +1325,7 @@ public class httpHelper {
     }
 
     private void captureSSLInfo(string url, ref System.Net.HttpWebRequest httpWebRequest) {
-        if (url.StartsWith("https://", StringComparison.OrdinalIgnoreCase)) {
-            sslCertificate = new System.Security.Cryptography.X509Certificates.X509Certificate2(httpWebRequest.ServicePoint.Certificate);
-        }
-        else sslCertificate = null;
+        sslCertificate = url.StartsWith("https://", StringComparison.OrdinalIgnoreCase) ? new System.Security.Cryptography.X509Certificates.X509Certificate2(httpWebRequest.ServicePoint.Certificate) : null;
     }
 
     private void addPostDataToWebRequest(ref System.Net.HttpWebRequest httpWebRequest)
@@ -1400,8 +1384,7 @@ public class httpHelper {
         if (boolUseProxy) {
             if (boolUseSystemProxy) httpWebRequest.Proxy = System.Net.WebRequest.GetSystemWebProxy();
             else {
-                if (customProxy == null) httpWebRequest.Proxy = System.Net.WebRequest.GetSystemWebProxy();
-                else httpWebRequest.Proxy = customProxy;
+                httpWebRequest.Proxy = customProxy == null ? System.Net.WebRequest.GetSystemWebProxy() : customProxy;
             }
         }
     }
