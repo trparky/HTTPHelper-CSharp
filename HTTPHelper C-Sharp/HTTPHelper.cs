@@ -1384,7 +1384,7 @@ public class httpHelper {
         if (boolUseProxy) {
             if (boolUseSystemProxy) httpWebRequest.Proxy = System.Net.WebRequest.GetSystemWebProxy();
             else {
-                httpWebRequest.Proxy = customProxy == null ? System.Net.WebRequest.GetSystemWebProxy() : customProxy;
+                httpWebRequest.Proxy = customProxy ?? System.Net.WebRequest.GetSystemWebProxy();
             }
         }
     }
