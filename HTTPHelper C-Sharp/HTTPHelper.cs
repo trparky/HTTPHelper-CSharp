@@ -1502,9 +1502,7 @@ public class httpHelper {
     private bool doWeHaveAnInternetConnection() {
         try {
             System.Net.NetworkInformation.Ping ping = new System.Net.NetworkInformation.Ping();
-
-            if (ping.Send("8.8.8.8").Status == System.Net.NetworkInformation.IPStatus.Success) return true;
-            else return false;
+            return (ping.Send("8.8.8.8").Status == System.Net.NetworkInformation.IPStatus.Success) ? true : false;
         }
         catch (Exception) { return false; }
     }
