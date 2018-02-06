@@ -8,3 +8,5 @@
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "CA2202")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times", Scope = "member", Target = "C_Sharp_Example.Form1.#btnDownloadFile2_Click(System.Object,System.EventArgs)")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times", Scope = "member", Target = "C_Sharp_Example.Form1.#btnDownloadFile_Click(System.Object,System.EventArgs)")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0039:Use local function", Justification = "<Pending>", Scope = "member", Target = "~M:C_Sharp_Example.Form1.btnGetWebPageData_Click(System.Object,System.EventArgs)")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0039:Use local function", Justification = "<Pending>", Scope = "member", Target = "~M:C_Sharp_Example.Form1.btnDownloadFile_Click(System.Object,System.EventArgs)")]
