@@ -124,7 +124,7 @@ class credentials {
 
 /// <summary>Allows you to easily POST and upload files to a remote HTTP server without you, the programmer, knowing anything about how it all works. This class does it all for you. It handles adding a User Agent String, additional HTTP Request Headers, string data to your HTTP POST data, and files to be uploaded in the HTTP POST data.</summary>
 public class httpHelper {
-    private const string classVersion = "1.306";
+    private const string classVersion = "1.307";
     private string strUserAgentString = null;
     private bool boolUseProxy = false;
     private bool boolUseSystemProxy = true;
@@ -1314,7 +1314,6 @@ public class httpHelper {
             httpRequestWriter.Write(postDataString);
             httpRequestWriter.Close();
             httpRequestWriter.Dispose();
-            httpRequestWriter = null;
         }
     }
 
@@ -1453,13 +1452,5 @@ public class httpHelper {
         else result = "(None)";
 
         return result;
-    }
-
-    private bool doWeHaveAnInternetConnection() {
-        try {
-            System.Net.NetworkInformation.Ping ping = new System.Net.NetworkInformation.Ping();
-            return (ping.Send("8.8.8.8").Status == System.Net.NetworkInformation.IPStatus.Success) ? true : false;
-        }
-        catch (Exception) { return false; }
     }
 }
