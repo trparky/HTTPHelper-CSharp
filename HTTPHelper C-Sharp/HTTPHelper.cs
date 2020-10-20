@@ -124,7 +124,7 @@ class credentials {
 
 /// <summary>Allows you to easily POST and upload files to a remote HTTP server without you, the programmer, knowing anything about how it all works. This class does it all for you. It handles adding a User Agent String, additional HTTP Request Headers, string data to your HTTP POST data, and files to be uploaded in the HTTP POST data.</summary>
 public class httpHelper {
-    private const string classVersion = "1.308";
+    private const string classVersion = "1.309";
     private string strUserAgentString = null;
     private bool boolUseProxy = false;
     private bool boolUseSystemProxy = true;
@@ -144,10 +144,10 @@ public class httpHelper {
     private int intDownloadBufferSize = 8191;
 
     private string strLastHTTPServerResponse;
-    private Dictionary<string, string> additionalHTTPHeaders = new Dictionary<string, string>();
-    private Dictionary<string, cookieDetails> httpCookies = new Dictionary<string, cookieDetails>();
-    private Dictionary<string, object> postData = new Dictionary<string, object>();
-    private Dictionary<string, string> getData = new Dictionary<string, string>();
+    private readonly Dictionary<string, string> additionalHTTPHeaders = new Dictionary<string, string>();
+    private readonly Dictionary<string, cookieDetails> httpCookies = new Dictionary<string, cookieDetails>();
+    private readonly Dictionary<string, object> postData = new Dictionary<string, object>();
+    private readonly Dictionary<string, string> getData = new Dictionary<string, string>();
     private downloadStatusDetails downloadStatusDetails;
 
     private credentials credentials;
@@ -368,8 +368,9 @@ public class httpHelper {
             stringBuilder.AppendLine("--== Raw Exception Data ==--");
             stringBuilder.AppendLine(lastException.ToString());
 
-            if (lastException is System.Net.WebException) {
-                stringBuilder.AppendLine("Raw Exception Status Code: " + ((System.Net.WebException)lastException).Status.ToString());
+            if (lastException is System.Net.WebException exception)
+            {
+                stringBuilder.AppendLine("Raw Exception Status Code: " + exception.Status.ToString());
             }
         }
 
@@ -612,10 +613,11 @@ public class httpHelper {
                 remoteFileName = strRemoteFileName
             };
             if (String.IsNullOrEmpty(strContentType)) {
-                string contentType = null;
                 Microsoft.Win32.RegistryKey regPath = Microsoft.Win32.Registry.ClassesRoot.OpenSubKey(fileInfo.Extension.ToLower(), false);
 
-                if (regPath == null) {
+                string contentType;
+                if (regPath == null)
+                {
                     lastException = new noMimeTypeFoundException("No MIME Type found for " + fileInfo.Extension.ToLower());
                     throw lastException;
                 }
@@ -1167,18 +1169,19 @@ public class httpHelper {
             if (postData.Count != 0) {
                 Stream httpRequestWriter = httpWebRequest.GetRequestStream();
                 string header = null;
-                FileInfo fileInfo = default(FileInfo);
+                FileInfo fileInfo = default;
                 FormFile formFileObjectInstance = null;
                 byte[] bytes = null;
                 byte[] buffer = null;
-                FileStream fileStream = default(FileStream);
+                FileStream fileStream = default;
                 string data = null;
 
                 foreach (KeyValuePair<string, object> entry in postData) {
                     httpRequestWriter.Write(boundaryBytes, 0, boundaryBytes.Length);
 
-                    if (entry.Value is FormFile) {
-                        formFileObjectInstance = (FormFile)entry.Value;
+                    if (entry.Value is FormFile file)
+                    {
+                        formFileObjectInstance = file;
 
                         if (String.IsNullOrEmpty(formFileObjectInstance.remoteFileName)) {
                             fileInfo = new FileInfo(formFileObjectInstance.localFilePath);
@@ -1406,24 +1409,29 @@ public class httpHelper {
     }
 
     public string fileSizeToHumanReadableFormat(ulong size, bool roundToNearestWholeNumber = false) {
-        string result = null;
         short shortRoundNumber;
         if (roundToNearestWholeNumber) { shortRoundNumber = 0; } else { shortRoundNumber = 2; }
 
+        string result;
         if (size <= (Math.Pow(2, 10))) result = size + " Bytes";
-        else if (size > (Math.Pow(2, 10)) & size <= (Math.Pow(2, 20))) {
+        else if (size > (Math.Pow(2, 10)) & size <= (Math.Pow(2, 20)))
+        {
             result = Math.Round(size / (Math.Pow(2, 10)), shortRoundNumber) + " KBs";
         }
-        else if (size > (Math.Pow(2, 20)) & size <= (Math.Pow(2, 30))) {
+        else if (size > (Math.Pow(2, 20)) & size <= (Math.Pow(2, 30)))
+        {
             result = Math.Round(size / (Math.Pow(2, 20)), shortRoundNumber) + " MBs";
         }
-        else if (size > (Math.Pow(2, 30)) & size <= (Math.Pow(2, 40))) {
+        else if (size > (Math.Pow(2, 30)) & size <= (Math.Pow(2, 40)))
+        {
             result = Math.Round(size / (Math.Pow(2, 30)), shortRoundNumber) + " GBs";
         }
-        else if (size > (Math.Pow(2, 40)) & size <= (Math.Pow(2, 50))) {
+        else if (size > (Math.Pow(2, 40)) & size <= (Math.Pow(2, 50)))
+        {
             result = Math.Round(size / (Math.Pow(2, 40)), shortRoundNumber) + " TBs";
         }
-        else if (size > (Math.Pow(2, 50)) & size <= (Math.Pow(2, 60))) {
+        else if (size > (Math.Pow(2, 50)) & size <= (Math.Pow(2, 60)))
+        {
             result = Math.Round(size / (Math.Pow(2, 50)), shortRoundNumber) + " PBs";
         }
         else result = "(None)";
