@@ -124,7 +124,7 @@ class credentials {
 
 /// <summary>Allows you to easily POST and upload files to a remote HTTP server without you, the programmer, knowing anything about how it all works. This class does it all for you. It handles adding a User Agent String, additional HTTP Request Headers, string data to your HTTP POST data, and files to be uploaded in the HTTP POST data.</summary>
 public class httpHelper {
-    private const string classVersion = "1.307";
+    private const string classVersion = "1.308";
     private string strUserAgentString = null;
     private bool boolUseProxy = false;
     private bool boolUseSystemProxy = true;
@@ -806,23 +806,19 @@ public class httpHelper {
 
                 if (ex2.Status == System.Net.WebExceptionStatus.ProtocolError) {
                     throw handleWebExceptionProtocolError(fileDownloadURL, ex2);
-                    return false;
                 }
                 else if (ex2.Status == System.Net.WebExceptionStatus.TrustFailure) {
                     lastException = new sslErrorException("There was an error establishing an SSL connection.", ex2);
                     throw lastException;
-                    return false;
                 }
                 else if (ex2.Status == System.Net.WebExceptionStatus.NameResolutionFailure) {
                     string strDomainName = System.Text.RegularExpressions.Regex.Match(lastAccessedURL, "(?:http(?:s){0,1}://){0,1}(.*)/", System.Text.RegularExpressions.RegexOptions.Singleline).Groups[1].Value;
                     lastException = new dnsLookupError(string.Format("There was an error while looking up the DNS records for the domain name {0}{1}{0}.", "\"", strDomainName), ex2);
                     throw lastException;
-                    return false;
                 }
 
                 lastException = new System.Net.WebException(ex.Message, ex2);
                 throw lastException;
-                return false;
             }
 
             return false;
@@ -941,23 +937,19 @@ public class httpHelper {
 
                 if (ex2.Status == System.Net.WebExceptionStatus.ProtocolError) {
                     throw handleWebExceptionProtocolError(fileDownloadURL, ex2);
-                    return false;
                 }
                 else if (ex2.Status == System.Net.WebExceptionStatus.TrustFailure) {
                     lastException = new sslErrorException("There was an error establishing an SSL connection.", ex2);
                     throw lastException;
-                    return false;
                 }
                 else if (ex2.Status == System.Net.WebExceptionStatus.NameResolutionFailure) {
                     string strDomainName = System.Text.RegularExpressions.Regex.Match(lastAccessedURL, "(?:http(?:s){0,1}://){0,1}(.*)/", System.Text.RegularExpressions.RegexOptions.Singleline).Groups[1].Value;
                     lastException = new dnsLookupError(string.Format("There was an error while looking up the DNS records for the domain name {0}{1}{0}.", "\"", strDomainName), ex2);
                     throw lastException;
-                    return false;
                 }
 
                 lastException = new System.Net.WebException(ex.Message, ex2);
                 throw lastException;
-                return false;
             }
 
             return false;
@@ -1031,28 +1023,23 @@ public class httpHelper {
 
                 if (ex2.Status == System.Net.WebExceptionStatus.ProtocolError) {
                     throw handleWebExceptionProtocolError(url, ex2);
-                    return false;
                 }
                 else if (ex2.Status == System.Net.WebExceptionStatus.TrustFailure) {
                     lastException = new sslErrorException("There was an error establishing an SSL connection.", ex2);
                     throw lastException;
-                    return false;
                 }
                 else if (ex2.Status == System.Net.WebExceptionStatus.NameResolutionFailure) {
                     string strDomainName = System.Text.RegularExpressions.Regex.Match(lastAccessedURL, "(?:http(?:s){0,1}://){0,1}(.*)/", System.Text.RegularExpressions.RegexOptions.Singleline).Groups[1].Value;
                     lastException = new dnsLookupError(string.Format("There was an error while looking up the DNS records for the domain name {0}{1}{0}.", "\"", strDomainName), ex2);
                     throw lastException;
-                    return false;
                 }
 
                 lastException = new System.Net.WebException(ex.Message, ex2);
                 throw lastException;
-                return false;
             }
 
             lastException = new Exception(ex.Message, ex);
             throw lastException;
-            return false;
         }
     }
 
@@ -1120,28 +1107,23 @@ public class httpHelper {
 
                 if (ex2.Status == System.Net.WebExceptionStatus.ProtocolError) {
                     throw handleWebExceptionProtocolError(url, ex2);
-                    return false;
                 }
                 else if (ex2.Status == System.Net.WebExceptionStatus.TrustFailure) {
                     lastException = new sslErrorException("There was an error establishing an SSL connection.", ex2);
                     throw lastException;
-                    return false;
                 }
                 else if (ex2.Status == System.Net.WebExceptionStatus.NameResolutionFailure) {
                     string strDomainName = System.Text.RegularExpressions.Regex.Match(lastAccessedURL, "(?:http(?:s){0,1}://){0,1}(.*)/", System.Text.RegularExpressions.RegexOptions.Singleline).Groups[1].Value;
                     lastException = new dnsLookupError(string.Format("There was an error while looking up the DNS records for the domain name {0}{1}{0}.", "\"", strDomainName), ex2);
                     throw lastException;
-                    return false;
                 }
 
                 lastException = new System.Net.WebException(ex.Message, ex2);
                 throw lastException;
-                return false;
             }
 
             lastException = new Exception(ex.Message, ex);
             throw lastException;
-            return false;
         }
     }
 
@@ -1272,28 +1254,23 @@ public class httpHelper {
 
                 if (ex2.Status == System.Net.WebExceptionStatus.ProtocolError) {
                     throw handleWebExceptionProtocolError(url, ex2);
-                    return false;
                 }
                 else if (ex2.Status == System.Net.WebExceptionStatus.TrustFailure) {
                     lastException = new sslErrorException("There was an error establishing an SSL connection.", ex2);
                     throw lastException;
-                    return false;
                 }
                 else if (ex2.Status == System.Net.WebExceptionStatus.NameResolutionFailure) {
                     string strDomainName = System.Text.RegularExpressions.Regex.Match(lastAccessedURL, "(?:http(?:s){0,1}://){0,1}(.*)/", System.Text.RegularExpressions.RegexOptions.Singleline).Groups[1].Value;
                     lastException = new dnsLookupError(string.Format("There was an error while looking up the DNS records for the domain name {0}{1}{0}.", "\"", strDomainName), ex2);
                     throw lastException;
-                    return false;
                 }
 
                 lastException = new System.Net.WebException(ex.Message, ex2);
                 throw lastException;
-                return false;
             }
 
             lastException = new Exception(ex.Message, ex);
             throw lastException;
-            return false;
         }
     }
 
