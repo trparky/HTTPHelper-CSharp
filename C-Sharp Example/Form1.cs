@@ -7,14 +7,14 @@ namespace C_Sharp_Example
 {
     public partial class Form1 : Form {
         // These are the delegates that we will be passing to the HTTPHelper class instance.
-        delegate void myCustomErrorHandlerDelegate(Exception ex, httpHelper classInstance);
-        delegate void myDownloadStatusRoutine(downloadStatusDetails downloadStatusDetails);
+        delegate void myCustomErrorHandlerDelegate(Exception ex, HTTPHelper classInstance);
+        delegate void myDownloadStatusRoutine(DownloadStatusDetails downloadStatusDetails);
 
         System.Threading.Thread downloadThread;
         System.Threading.Thread statusThread;
         ulong oldFileSize = 0;
-        string urlToDownload = "http://releases.ubuntu.com/16.04.2/ubuntu-16.04.2-desktop-amd64.iso";
-        string localFilePathToDownloadFileTo = "S:\\ubuntu-16.04.2-desktop-amd64.iso";
+        readonly string urlToDownload = "http://releases.ubuntu.com/16.04.2/ubuntu-16.04.2-desktop-amd64.iso";
+        readonly string localFilePathToDownloadFileTo = "S:\\ubuntu-16.04.2-desktop-amd64.iso";
 
         public Form1() { InitializeComponent(); }
 
@@ -22,29 +22,29 @@ namespace C_Sharp_Example
             try {
                 string strServerResponse = null;
 
-                httpHelper httpHelper = new httpHelper() { setUserAgent = "Microsoft .NET" }; // Set our User Agent String.
-                httpHelper.addGETData("test3", "value3");
-                httpHelper.addHTTPCookie("mycookie", "my cookie contents", "www.toms-world.org", "/");
-                httpHelper.addHTTPHeader("myheader", "my header contents");
-                httpHelper.setHTTPCredentials("test", "test");
-                httpHelper.setURLPreProcessor = (string strURLInput) => { System.Diagnostics.Debug.WriteLine("strURLInput = " + strURLInput); return strURLInput; };
+                HTTPHelper HTTPHelper = new HTTPHelper() { SetUserAgent = "Microsoft .NET" }; // Set our User Agent String.
+                HTTPHelper.AddGETData("test3", "value3");
+                HTTPHelper.AddHTTPCookie("mycookie", "my cookie contents", "www.toms-world.org", "/");
+                HTTPHelper.AddHTTPHeader("myheader", "my header contents");
+                HTTPHelper.SetHTTPCredentials("test", "test");
+                HTTPHelper.SetURLPreProcessor = (string strURLInput) => { System.Diagnostics.Debug.WriteLine("strURLInput = " + strURLInput); return strURLInput; };
 
                 // This sets up our download status updating delegate to be injected like a plugin into the HTTPHelper class instance.
-                myCustomErrorHandlerDelegate setCustomErrorHandler = (Exception ex, httpHelper classInstance) => { Interaction.MsgBox(ex.Message); };
-                httpHelper.setCustomErrorHandler = setCustomErrorHandler;
+                myCustomErrorHandlerDelegate setCustomErrorHandler = (Exception ex, HTTPHelper classInstance) => { Interaction.MsgBox(ex.Message); };
+                HTTPHelper.SetCustomErrorHandler = setCustomErrorHandler;
                 // This sets up our download status updating delegate to be injected like a plugin into the HTTPHelper class instance.
 
-                if (httpHelper.getWebData("https://www.toms-world.org/php/phpinfo.php", ref strServerResponse)) {
+                if (HTTPHelper.GetWebData("https://www.toms-world.org/php/phpinfo.php", ref strServerResponse)) {
                     WebBrowser1.DocumentText = strServerResponse;
-                    TextBox1.Text = httpHelper.getHTTPResponseHeaders(true).ToString();
+                    TextBox1.Text = HTTPHelper.GetHTTPResponseHeaders(true).ToString();
 
-                    X509Certificate2 certDetails = httpHelper.getCertificateDetails(false);
+                    X509Certificate2 certDetails = HTTPHelper.GetCertificateDetails(false);
                     if (certDetails != null) {
                         TextBox1.Text += certDetails.ToString();
                     }
                 }
             }
-            catch (httpProtocolException) {
+            catch (HTTPProtocolException) {
                 // You can handle httpProtocolExceptions different than normal exceptions with this code.
             }
             catch (System.Net.WebException) {
@@ -58,23 +58,23 @@ namespace C_Sharp_Example
             {
                 string strServerResponse = null;
 
-                httpHelper httpHelper = new httpHelper() { setUserAgent = "Microsoft .NET" }; // Set our User Agent String.
-                httpHelper.addHTTPCookie("mycookie", "my cookie contents", "www.toms-world.org", "/");
-                httpHelper.addHTTPHeader("myheader", "my header contents");
-                httpHelper.addPOSTData("test1", "value1");
-                httpHelper.addPOSTData("test2", "value2");
-                httpHelper.addGETData("test3", "value3");
-                httpHelper.addPOSTData("major", "3");
-                httpHelper.addPOSTData("minor", "9");
-                httpHelper.addPOSTData("build", "6");
-                httpHelper.setURLPreProcessor = (string strURLInput) => { System.Diagnostics.Debug.WriteLine("strURLInput = " + strURLInput); return strURLInput; };
+                HTTPHelper HTTPHelper = new HTTPHelper() { SetUserAgent = "Microsoft .NET" }; // Set our User Agent String.
+                HTTPHelper.AddHTTPCookie("mycookie", "my cookie contents", "www.toms-world.org", "/");
+                HTTPHelper.AddHTTPHeader("myheader", "my header contents");
+                HTTPHelper.AddPOSTData("test1", "value1");
+                HTTPHelper.AddPOSTData("test2", "value2");
+                HTTPHelper.AddGETData("test3", "value3");
+                HTTPHelper.AddPOSTData("major", "3");
+                HTTPHelper.AddPOSTData("minor", "9");
+                HTTPHelper.AddPOSTData("build", "6");
+                HTTPHelper.SetURLPreProcessor = (string strURLInput) => { System.Diagnostics.Debug.WriteLine("strURLInput = " + strURLInput); return strURLInput; };
 
-                if (httpHelper.getWebData("https://www.toms-world.org/httphelper.php", ref strServerResponse))
+                if (HTTPHelper.GetWebData("https://www.toms-world.org/httphelper.php", ref strServerResponse))
                 {
                     WebBrowser1.DocumentText = strServerResponse;
-                    TextBox1.Text = httpHelper.getHTTPResponseHeaders().ToString();
+                    TextBox1.Text = HTTPHelper.GetHTTPResponseHeaders().ToString();
 
-                    X509Certificate2 certDetails = httpHelper.getCertificateDetails(false);
+                    X509Certificate2 certDetails = HTTPHelper.GetCertificateDetails(false);
                     if (certDetails != null) TextBox1.Text += certDetails.ToString();
 
                     //For Each strHeaderName As String In httpHelper.getHTTPResponseHeaders
@@ -82,7 +82,7 @@ namespace C_Sharp_Example
                     //Next
                 }
             }
-            catch (httpProtocolException)
+            catch (HTTPProtocolException)
             {
                 // You can handle httpProtocolExceptions different than normal exceptions with this code.
             }
@@ -102,22 +102,22 @@ namespace C_Sharp_Example
                 if (OpenFileDialog.ShowDialog() == DialogResult.OK) {
                     string strServerResponse = null;
 
-                    httpHelper httpHelper = new httpHelper() {
-                        setHTTPTimeout = 10,
-                        setUserAgent = "Microsoft .NET" // Set our User Agent String.
+                    HTTPHelper HTTPHelper = new HTTPHelper() {
+                        SetHTTPTimeout = 10,
+                        SetUserAgent = "Microsoft .NET" // Set our User Agent String.
                     };
-                    httpHelper.addHTTPCookie("mycookie", "my cookie contents", "www.toms-world.org", "/");
-                    httpHelper.addHTTPHeader("myheader", "my header contents");
-                    httpHelper.addPOSTData("test1", "value1");
-                    httpHelper.addPOSTData("test2", "value2");
-                    httpHelper.addGETData("test3", "value3");
-                    httpHelper.addFileUpload("myfileupload", OpenFileDialog.FileName, null, null);
+                    HTTPHelper.AddHTTPCookie("mycookie", "my cookie contents", "www.toms-world.org", "/");
+                    HTTPHelper.AddHTTPHeader("myheader", "my header contents");
+                    HTTPHelper.AddPOSTData("test1", "value1");
+                    HTTPHelper.AddPOSTData("test2", "value2");
+                    HTTPHelper.AddGETData("test3", "value3");
+                    HTTPHelper.AddFileUpload("myfileupload", OpenFileDialog.FileName, null, null);
 
-                    if (httpHelper.uploadData("https://www.toms-world.org/httphelper.php", ref strServerResponse)) {
+                    if (HTTPHelper.UploadData("https://www.toms-world.org/httphelper.php", ref strServerResponse)) {
                         WebBrowser1.DocumentText = strServerResponse;
-                        TextBox1.Text = httpHelper.getHTTPResponseHeaders().ToString();
+                        TextBox1.Text = HTTPHelper.GetHTTPResponseHeaders().ToString();
 
-                        X509Certificate2 certDetails = httpHelper.getCertificateDetails(false);
+                        X509Certificate2 certDetails = HTTPHelper.GetCertificateDetails(false);
                         if (certDetails != null) TextBox1.Text += certDetails.ToString();
                     }
                 }
@@ -133,26 +133,26 @@ namespace C_Sharp_Example
         private void btnDownloadFile_Click(object sender, EventArgs e) {
             // First we create our httpHelper Class instance.
             {
-                httpHelper httpHelper = new httpHelper() {
-                    setUserAgent = "Microsoft .NET", // Set our User Agent String.
-                    enableMultiThreadedDownloadStatusUpdates = true
+                HTTPHelper HTTPHelper = new HTTPHelper() {
+                    SetUserAgent = "Microsoft .NET", // Set our User Agent String.
+                    EnableMultiThreadedDownloadStatusUpdates = true
                 };
                 ulong oldFileSize = 0;
                 
                 // First we create our delegate.
-                myDownloadStatusRoutine myDownloadStatusUpdater = (downloadStatusDetails downloadStatusDetails) => {
-                    if (httpHelper.enableMultiThreadedDownloadStatusUpdates) {
-                        Label1.Text = string.Format("Downloaded {0} of {1} ({2}/s)", httpHelper.fileSizeToHumanReadableFormat(downloadStatusDetails.localFileSize), httpHelper.fileSizeToHumanReadableFormat(downloadStatusDetails.remoteFileSize), httpHelper.fileSizeToHumanReadableFormat(downloadStatusDetails.localFileSize - oldFileSize));
+                myDownloadStatusRoutine myDownloadStatusUpdater = (DownloadStatusDetails downloadStatusDetails) => {
+                    if (HTTPHelper.EnableMultiThreadedDownloadStatusUpdates) {
+                        Label1.Text = string.Format("Downloaded {0} of {1} ({2}/s)", HTTPHelper.FileSizeToHumanReadableFormat(downloadStatusDetails.localFileSize), HTTPHelper.FileSizeToHumanReadableFormat(downloadStatusDetails.remoteFileSize), HTTPHelper.FileSizeToHumanReadableFormat(downloadStatusDetails.localFileSize - oldFileSize));
                         oldFileSize = downloadStatusDetails.localFileSize;
                     }
                     else {
-                        Label1.Text = string.Format("Downloaded {0} of {1}", httpHelper.fileSizeToHumanReadableFormat(downloadStatusDetails.localFileSize), httpHelper.fileSizeToHumanReadableFormat(downloadStatusDetails.remoteFileSize));
+                        Label1.Text = string.Format("Downloaded {0} of {1}", HTTPHelper.FileSizeToHumanReadableFormat(downloadStatusDetails.localFileSize), HTTPHelper.FileSizeToHumanReadableFormat(downloadStatusDetails.remoteFileSize));
                     }
 
                     Label2.Text = downloadStatusDetails.percentageDownloaded.ToString() + "%";
                     ProgressBar1.Value = downloadStatusDetails.percentageDownloaded;
                 };
-                httpHelper.setDownloadStatusUpdateRoutine = myDownloadStatusUpdater; // And now we pass our delegate to the HTTPHelper class instance.
+                HTTPHelper.SetDownloadStatusUpdateRoutine = myDownloadStatusUpdater; // And now we pass our delegate to the HTTPHelper class instance.
 
                 // Now we need to create our download thread.
                 downloadThread = new System.Threading.Thread(() => {
@@ -166,7 +166,7 @@ namespace C_Sharp_Example
                         btnDownloadFile2.Enabled = false;
 
                         // We use the downloadFile() function which first calls for the URL and then the path to a place on the local file system to save it. This function is why we need multithreading, this will take a long time to do.
-                        if (httpHelper.downloadFile(urlToFileToBeDownloaded, ref memStream, true)) {
+                        if (HTTPHelper.DownloadFile(urlToFileToBeDownloaded, ref memStream, true)) {
                             System.IO.FileStream fileStream = new System.IO.FileStream(pathToDownloadFileTo, System.IO.FileMode.Create);
                             memStream.CopyTo(fileStream);
                             memStream.Close();
@@ -208,7 +208,7 @@ namespace C_Sharp_Example
 
         private void btnDownloadFile2_Click(object sender, EventArgs e) {
             // First we create our httpHelper Class instance.
-            httpHelper httpHelper = new httpHelper() { setUserAgent = "Microsoft .NET" }; // Set our User Agent String.
+            HTTPHelper HTTPHelper = new HTTPHelper() { SetUserAgent = "Microsoft .NET" }; // Set our User Agent String.
 
             // Now we need to create our download thread.
             downloadThread = new System.Threading.Thread(() => {
@@ -222,7 +222,7 @@ namespace C_Sharp_Example
                     btnDownloadFile2.Enabled = false;
 
                     // We use the downloadFile() function which first calls for the URL and then the path to a place on the local file system to save it. This function is why we need multithreading, this will take a long time to do.
-                    if (httpHelper.downloadFile(urlToFileToBeDownloaded, ref memStream, true)) {
+                    if (HTTPHelper.DownloadFile(urlToFileToBeDownloaded, ref memStream, true)) {
                         System.IO.FileStream fileStream = new System.IO.FileStream(pathToDownloadFileTo, System.IO.FileMode.Create);
                         memStream.CopyTo(fileStream);
                         memStream.Close();
@@ -256,12 +256,12 @@ namespace C_Sharp_Example
             // Starts our download thread.
 
             statusThread = new System.Threading.Thread(() => {
-                downloadStatusDetails downloadStatusDetails;
+                DownloadStatusDetails downloadStatusDetails;
                 startAgain:
-                downloadStatusDetails = httpHelper.getDownloadStatusDetails;
+                downloadStatusDetails = HTTPHelper.GetDownloadStatusDetails;
 
                 if (downloadStatusDetails != null) {
-                    Label1.Text = string.Format("Downloaded {0} of {1} ({2}/s)", httpHelper.fileSizeToHumanReadableFormat(downloadStatusDetails.localFileSize), httpHelper.fileSizeToHumanReadableFormat(downloadStatusDetails.remoteFileSize), httpHelper.fileSizeToHumanReadableFormat(downloadStatusDetails.localFileSize - oldFileSize));
+                    Label1.Text = string.Format("Downloaded {0} of {1} ({2}/s)", HTTPHelper.FileSizeToHumanReadableFormat(downloadStatusDetails.localFileSize), HTTPHelper.FileSizeToHumanReadableFormat(downloadStatusDetails.remoteFileSize), HTTPHelper.FileSizeToHumanReadableFormat(downloadStatusDetails.localFileSize - oldFileSize));
 
                     oldFileSize = downloadStatusDetails.localFileSize;
 
