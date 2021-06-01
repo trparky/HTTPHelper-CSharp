@@ -12,7 +12,7 @@ namespace C_Sharp_Example
 
         System.Threading.Thread downloadThread;
         System.Threading.Thread statusThread;
-        ulong oldFileSize = 0;
+        long oldFileSize = 0;
         readonly string urlToDownload = "http://releases.ubuntu.com/16.04.2/ubuntu-16.04.2-desktop-amd64.iso";
         readonly string localFilePathToDownloadFileTo = "S:\\ubuntu-16.04.2-desktop-amd64.iso";
 
@@ -137,7 +137,7 @@ namespace C_Sharp_Example
                     SetUserAgent = "Microsoft .NET", // Set our User Agent String.
                     EnableMultiThreadedDownloadStatusUpdates = true
                 };
-                ulong oldFileSize = 0;
+                long oldFileSize = 0;
                 
                 // First we create our delegate.
                 myDownloadStatusRoutine myDownloadStatusUpdater = (DownloadStatusDetails downloadStatusDetails) => {

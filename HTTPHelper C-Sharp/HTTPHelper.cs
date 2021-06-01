@@ -112,8 +112,8 @@ class CookieDetails {
 }
 
 public class DownloadStatusDetails {
-    public ulong remoteFileSize;
-    public ulong localFileSize;
+    public long remoteFileSize;
+    public long localFileSize;
     public short percentageDownloaded;
 }
 
@@ -131,8 +131,8 @@ public class HTTPHelper {
     private System.Net.IWebProxy customProxy = null;
     private System.Net.WebHeaderCollection httpResponseHeaders = null;
     private short httpDownloadProgressPercentage = 0;
-    private ulong remoteFileSize;
-    private ulong currentFileSize;
+    private long remoteFileSize;
+    private long currentFileSize;
     private long httpTimeOut = 5000;
     private bool boolUseHTTPCompression = true;
     private string lastAccessedURL = null;
@@ -747,12 +747,12 @@ public class HTTPHelper {
             CaptureSSLInfo(fileDownloadURL, ref httpWebRequest);
 
             // Gets the size of the remote file on the web server.
-            remoteFileSize = (ulong)webResponse.ContentLength;
+            remoteFileSize = (long)webResponse.ContentLength;
 
             Stream responseStream = webResponse.GetResponseStream();
             // Gets the response stream.
 
-            ulong lngBytesReadFromInternet = (ulong)responseStream.Read(dataBuffer, 0, dataBuffer.Length);
+            long lngBytesReadFromInternet = (long)responseStream.Read(dataBuffer, 0, dataBuffer.Length);
             // Reads some data from the HTTP stream into our data buffer.
 
             // We keep looping until all of the data has been downloaded.
@@ -769,7 +769,7 @@ public class HTTPHelper {
                 // Update the download percentage value.
                 DownloadStatusUpdateInvoker();
 
-                lngBytesReadFromInternet = (ulong)responseStream.Read(dataBuffer, 0, dataBuffer.Length);
+                lngBytesReadFromInternet = (long)responseStream.Read(dataBuffer, 0, dataBuffer.Length);
                 // Reads more data into our data buffer.
             }
 
@@ -869,14 +869,14 @@ public class HTTPHelper {
             CaptureSSLInfo(fileDownloadURL, ref httpWebRequest);
 
             // Gets the size of the remote file on the web server.
-            remoteFileSize = (ulong)webResponse.ContentLength;
+            remoteFileSize = (long)webResponse.ContentLength;
 
             Stream responseStream = webResponse.GetResponseStream();
             // Gets the response stream.
             fileWriteStream = new FileStream(localFileName, FileMode.Create);
             // Creates a file write stream.
 
-            ulong lngBytesReadFromInternet = (ulong)responseStream.Read(dataBuffer, 0, dataBuffer.Length);
+            long lngBytesReadFromInternet = (long)responseStream.Read(dataBuffer, 0, dataBuffer.Length);
             // Reads some data from the HTTP stream into our data buffer.
 
             // We keep looping until all of the data has been downloaded.
@@ -893,7 +893,7 @@ public class HTTPHelper {
                 // Update the download percentage value.
                 DownloadStatusUpdateInvoker();
 
-                lngBytesReadFromInternet = (ulong)responseStream.Read(dataBuffer, 0, dataBuffer.Length);
+                lngBytesReadFromInternet = (long)responseStream.Read(dataBuffer, 0, dataBuffer.Length);
                 // Reads more data into our data buffer.
             }
 
@@ -1407,7 +1407,7 @@ public class HTTPHelper {
         return lastException;
     }
 
-    public string FileSizeToHumanReadableFormat(ulong size, bool roundToNearestWholeNumber = false) {
+    public string FileSizeToHumanReadableFormat(long size, bool roundToNearestWholeNumber = false) {
         short shortRoundNumber;
         if (roundToNearestWholeNumber) { shortRoundNumber = 0; } else { shortRoundNumber = 2; }
 
