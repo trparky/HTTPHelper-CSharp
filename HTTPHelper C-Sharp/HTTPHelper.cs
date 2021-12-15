@@ -460,7 +460,7 @@ public class HTTPHelper {
     /// <param name="throwExceptionIfDataAlreadyExists">This tells the function if it should throw an exception if the data already exists in the POST data.</param>
     /// <exception cref="dataAlreadyExistsException">If this function throws a dataAlreadyExistsException, you forgot to add some data for your POST variable.</exception>
     public void AddPOSTData(string strName, string strValue, bool throwExceptionIfDataAlreadyExists = false) {
-        if (String.IsNullOrEmpty(strValue.Trim())) {
+        if (string.IsNullOrEmpty(strValue.Trim())) {
             lastException = new DataMissingException(string.Format("Data was missing for the {0}{1}{0} POST variable.", "\"", strName));
             throw lastException;
         }
@@ -480,7 +480,7 @@ public class HTTPHelper {
     /// <param name="strValue">The value of the data to post.</param>
     /// <exception cref="dataAlreadyExistsException">If this function throws a dataAlreadyExistsException, you forgot to add some data for your POST variable.</exception>
     public void AddGETData(string strName, string strValue, bool throwExceptionIfDataAlreadyExists = false) {
-        if (String.IsNullOrEmpty(strValue.Trim())) {
+        if (string.IsNullOrEmpty(strValue.Trim())) {
             lastException = new DataMissingException(string.Format("Data was missing for the {0}{1}{0} GET variable.", "\"", strName));
             throw lastException;
         }
@@ -615,7 +615,7 @@ public class HTTPHelper {
                 LocalFilePath = strLocalFilePath,
                 RemoteFileName = strRemoteFileName
             };
-            if (String.IsNullOrEmpty(strContentType)) {
+            if (string.IsNullOrEmpty(strContentType)) {
                 Microsoft.Win32.RegistryKey regPath = Microsoft.Win32.Registry.ClassesRoot.OpenSubKey(fileInfo.Extension.ToLower(), false);
 
                 string contentType;
@@ -626,7 +626,7 @@ public class HTTPHelper {
                 }
                 else contentType = regPath.GetValue("Content Type", null).ToString();
 
-                if (String.IsNullOrEmpty(contentType)) {
+                if (string.IsNullOrEmpty(contentType)) {
                     lastException = new NoMimeTypeFoundException("No MIME Type found for " + fileInfo.Extension.ToLower());
                     throw lastException;
                 }
@@ -767,7 +767,7 @@ public class HTTPHelper {
                 memStream.Write(dataBuffer, 0, (int)lngBytesReadFromInternet);
                 // Writes the data directly to disk.
 
-                amountDownloaded = (currentFileSize / remoteFileSize) * 100;
+                amountDownloaded = currentFileSize / remoteFileSize * 100;
                 httpDownloadProgressPercentage = (short)Math.Round(amountDownloaded, 0);
                 // Update the download percentage value.
                 DownloadStatusUpdateInvoker();
@@ -891,7 +891,7 @@ public class HTTPHelper {
                 fileWriteStream.Write(dataBuffer, 0, (int)lngBytesReadFromInternet);
                 // Writes the data directly to disk.
 
-                amountDownloaded = (currentFileSize / remoteFileSize) * 100;
+                amountDownloaded = currentFileSize / remoteFileSize * 100;
                 httpDownloadProgressPercentage = (short)Math.Round(amountDownloaded, 0);
                 // Update the download percentage value.
                 DownloadStatusUpdateInvoker();
@@ -1158,7 +1158,7 @@ public class HTTPHelper {
             if (getData.Count != 0) url += "?" + GetGETDataString();
 
             string boundary = "---------------------------" + DateTime.Now.Ticks.ToString("x");
-            byte[] boundaryBytes = System.Text.Encoding.ASCII.GetBytes((Convert.ToString(vbCr + vbLf + "--") + boundary) + vbCr + vbLf);
+            byte[] boundaryBytes = System.Text.Encoding.ASCII.GetBytes(Convert.ToString(vbCr + vbLf + "--") + boundary + vbCr + vbLf);
 
             httpWebRequest = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(url);
 
@@ -1186,7 +1186,7 @@ public class HTTPHelper {
                     {
                         formFileObjectInstance = file;
 
-                        if (String.IsNullOrEmpty(formFileObjectInstance.RemoteFileName)) {
+                        if (string.IsNullOrEmpty(formFileObjectInstance.RemoteFileName)) {
                             fileInfo = new FileInfo(formFileObjectInstance.LocalFilePath);
 
                             header = string.Format("Content-Disposition: form-data; name={0}{1}{0}; filename={0}{2}{0}", "\"", entry.Key, fileInfo.Name);
@@ -1306,7 +1306,7 @@ public class HTTPHelper {
             AddHTTPHeader("Authorization", "Basic " + Convert.ToBase64String(System.Text.Encoding.Default.GetBytes(credentials.strUser + ":" + credentials.strPassword)));
         }
 
-        if (!String.IsNullOrWhiteSpace(strUserAgentString)) httpWebRequest.UserAgent = strUserAgentString;
+        if (!string.IsNullOrWhiteSpace(strUserAgentString)) httpWebRequest.UserAgent = strUserAgentString;
         if (httpCookies.Count != 0) GetCookies(ref httpWebRequest);
         if (additionalHTTPHeaders.Count != 0) GetHeaders(ref httpWebRequest);
 
@@ -1360,7 +1360,7 @@ public class HTTPHelper {
         string postDataString = "";
         foreach (KeyValuePair<string, object> entry in postData) {
             if (!entry.Value.GetType().Equals(typeof(FormFile))) {
-                postDataString += entry.Key.ToString().Trim() + "=" + System.Web.HttpUtility.UrlEncode((String)entry.Value) + "&";
+                postDataString += entry.Key.ToString().Trim() + "=" + System.Web.HttpUtility.UrlEncode((string)entry.Value) + "&";
             }
         }
 
@@ -1415,26 +1415,26 @@ public class HTTPHelper {
         if (roundToNearestWholeNumber) { shortRoundNumber = 0; } else { shortRoundNumber = 2; }
 
         string result;
-        if (size <= (Math.Pow(2, 10))) result = size + " Bytes";
-        else if (size > (Math.Pow(2, 10)) & size <= (Math.Pow(2, 20)))
+        if (size <= Math.Pow(2, 10)) result = size + " Bytes";
+        else if (size > Math.Pow(2, 10) & size <= Math.Pow(2, 20))
         {
-            result = Math.Round(size / (Math.Pow(2, 10)), shortRoundNumber) + " KBs";
+            result = Math.Round(size / Math.Pow(2, 10), shortRoundNumber) + " KBs";
         }
-        else if (size > (Math.Pow(2, 20)) & size <= (Math.Pow(2, 30)))
+        else if (size > Math.Pow(2, 20) & size <= Math.Pow(2, 30))
         {
-            result = Math.Round(size / (Math.Pow(2, 20)), shortRoundNumber) + " MBs";
+            result = Math.Round(size / Math.Pow(2, 20), shortRoundNumber) + " MBs";
         }
-        else if (size > (Math.Pow(2, 30)) & size <= (Math.Pow(2, 40)))
+        else if (size > Math.Pow(2, 30) & size <= Math.Pow(2, 40))
         {
-            result = Math.Round(size / (Math.Pow(2, 30)), shortRoundNumber) + " GBs";
+            result = Math.Round(size / Math.Pow(2, 30), shortRoundNumber) + " GBs";
         }
-        else if (size > (Math.Pow(2, 40)) & size <= (Math.Pow(2, 50)))
+        else if (size > Math.Pow(2, 40) & size <= Math.Pow(2, 50))
         {
-            result = Math.Round(size / (Math.Pow(2, 40)), shortRoundNumber) + " TBs";
+            result = Math.Round(size / Math.Pow(2, 40), shortRoundNumber) + " TBs";
         }
-        else if (size > (Math.Pow(2, 50)) & size <= (Math.Pow(2, 60)))
+        else if (size > Math.Pow(2, 50) & size <= Math.Pow(2, 60))
         {
-            result = Math.Round(size / (Math.Pow(2, 50)), shortRoundNumber) + " PBs";
+            result = Math.Round(size / Math.Pow(2, 50), shortRoundNumber) + " PBs";
         }
         else result = "(None)";
 
