@@ -30,7 +30,7 @@ namespace C_Sharp_Example
                 HTTPHelper.SetURLPreProcessor = (string strURLInput) => { System.Diagnostics.Debug.WriteLine("strURLInput = " + strURLInput); return strURLInput; };
 
                 // This sets up our download status updating delegate to be injected like a plugin into the HTTPHelper class instance.
-                myCustomErrorHandlerDelegate setCustomErrorHandler = (Exception ex, HTTPHelper classInstance) => { Interaction.MsgBox(ex.Message); };
+                myCustomErrorHandlerDelegate setCustomErrorHandler = (Exception ex, HTTPHelper classInstance) => { MessageBox.Show(ex.Message); };
                 HTTPHelper.SetCustomErrorHandler = setCustomErrorHandler;
                 // This sets up our download status updating delegate to be injected like a plugin into the HTTPHelper class instance.
 
@@ -50,7 +50,7 @@ namespace C_Sharp_Example
             catch (System.Net.WebException) {
                 // You can handle web exceptions different than normal exceptions with this code.
             }
-            catch (Exception ex) { Interaction.MsgBox(ex.Message + " " + ex.StackTrace); }
+            catch (Exception ex) { MessageBox.Show(ex.Message + " " + ex.StackTrace); }
         }
 
         private void postDataExample_Click(object sender, EventArgs e) {
@@ -90,7 +90,7 @@ namespace C_Sharp_Example
             {
                 // You can handle web exceptions different than normal exceptions with this code.
             }
-            catch (Exception ex) { Interaction.MsgBox(ex.Message + " " + ex.StackTrace); }
+            catch (Exception ex) { MessageBox.Show(ex.Message + " " + ex.StackTrace); }
         }
 
         private void btnUpload_Click(object sender, EventArgs e) {
@@ -122,7 +122,7 @@ namespace C_Sharp_Example
                     }
                 }
             }
-            catch (System.Net.WebException ex) { Interaction.MsgBox(ex.Message + " " + ex.StackTrace); }
+            catch (System.Net.WebException ex) { MessageBox.Show(ex.Message + " " + ex.StackTrace); }
         }
 
         private void btnStopDownload_Click(object sender, EventArgs e) {
@@ -176,7 +176,7 @@ namespace C_Sharp_Example
 
                             btnDownloadFile.Enabled = true;
                             btnStopDownload.Enabled = false;
-                            Interaction.MsgBox("Download complete.");
+                            MessageBox.Show("Download complete.");
                             // And tell the user that the download is complete.
                         }
 
@@ -185,7 +185,7 @@ namespace C_Sharp_Example
                         btnDownloadFile.Enabled = true;
                         btnDownloadFile2.Enabled = true;
                         btnStopDownload.Enabled = false;
-                        Interaction.MsgBox(ex.Message + " " + ex.StackTrace);
+                        MessageBox.Show(ex.Message + " " + ex.StackTrace);
 
                     }
                     catch (System.Threading.ThreadAbortException) {
@@ -194,7 +194,7 @@ namespace C_Sharp_Example
                         btnStopDownload.Enabled = false;
 
                         if (System.IO.File.Exists(pathToDownloadFileTo)) System.IO.File.Delete(pathToDownloadFileTo);
-                        Interaction.MsgBox("Download aborted.");
+                        MessageBox.Show("Download aborted.");
                         // And tell the user that the download is aborted.
                     }
                 })
@@ -232,7 +232,7 @@ namespace C_Sharp_Example
 
                         btnDownloadFile.Enabled = true;
                         btnStopDownload.Enabled = false;
-                        Interaction.MsgBox("Download complete.");
+                        MessageBox.Show("Download complete.");
                         // And tell the user that the download is complete.
                     }
                 }
@@ -240,14 +240,14 @@ namespace C_Sharp_Example
                     btnDownloadFile.Enabled = true;
                     btnDownloadFile2.Enabled = true;
                     btnStopDownload.Enabled = false;
-                    Interaction.MsgBox(ex.Message + " " + ex.StackTrace);
+                    MessageBox.Show(ex.Message + " " + ex.StackTrace);
                 }
                 catch (System.Threading.ThreadAbortException) {
                     btnDownloadFile.Enabled = true;
                     btnDownloadFile2.Enabled = true;
                     btnStopDownload.Enabled = false;
                     if (System.IO.File.Exists(pathToDownloadFileTo)) System.IO.File.Delete(pathToDownloadFileTo);
-                    Interaction.MsgBox("Download aborted.");
+                    MessageBox.Show("Download aborted.");
                     // And tell the user that the download is aborted.
                 }
             }) { IsBackground = true };

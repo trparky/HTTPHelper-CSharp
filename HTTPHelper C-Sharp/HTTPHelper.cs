@@ -1,5 +1,4 @@
-﻿using Microsoft.VisualBasic;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -154,6 +153,10 @@ public class HTTPHelper {
     private System.Security.Cryptography.X509Certificates.X509Certificate2 sslCertificate;
     private Func<string, string> urlPreProcessor;
     private Delegate customErrorHandler;
+
+    private const string vbCr = "\r";
+    private const string vbLf = "\n";
+    private const string vbCrLf = "\r\n";
 
     private Delegate downloadStatusUpdater;
     /// <summary>Retrieves the downloadStatusDetails data from within the Class instance.</summary>
@@ -1155,7 +1158,7 @@ public class HTTPHelper {
             if (getData.Count != 0) url += "?" + GetGETDataString();
 
             string boundary = "---------------------------" + DateTime.Now.Ticks.ToString("x");
-            byte[] boundaryBytes = System.Text.Encoding.ASCII.GetBytes((Convert.ToString(Constants.vbCr + Constants.vbLf + "--") + boundary) + Constants.vbCr + Constants.vbLf);
+            byte[] boundaryBytes = System.Text.Encoding.ASCII.GetBytes((Convert.ToString(vbCr + vbLf + "--") + boundary) + vbCr + vbLf);
 
             httpWebRequest = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(url);
 
@@ -1187,11 +1190,11 @@ public class HTTPHelper {
                             fileInfo = new FileInfo(formFileObjectInstance.LocalFilePath);
 
                             header = string.Format("Content-Disposition: form-data; name={0}{1}{0}; filename={0}{2}{0}", "\"", entry.Key, fileInfo.Name);
-                            header += Constants.vbCrLf + "Content-Type: " + formFileObjectInstance.ContentType + Constants.vbCrLf + Constants.vbCrLf;
+                            header += vbCrLf + "Content-Type: " + formFileObjectInstance.ContentType + vbCrLf + vbCrLf;
                         }
                         else {
                             header = string.Format("Content-Disposition: form-data; name={0}{1}{0}; filename={0}{2}{0}", "\"", entry.Key, formFileObjectInstance.RemoteFileName);
-                            header += Constants.vbCrLf + "Content-Type: " + formFileObjectInstance.ContentType + Constants.vbCrLf + Constants.vbCrLf;
+                            header += vbCrLf + "Content-Type: " + formFileObjectInstance.ContentType + vbCrLf + vbCrLf;
                         }
 
                         bytes = System.Text.Encoding.UTF8.GetBytes(header);
@@ -1208,13 +1211,13 @@ public class HTTPHelper {
                         fileStream = null;
                     }
                     else {
-                        data = string.Format("Content-Disposition: form-data; name={0}{1}{0}{2}{2}{3}", "\"", entry.Key, Constants.vbCrLf, entry.Value);
+                        data = string.Format("Content-Disposition: form-data; name={0}{1}{0}{2}{2}{3}", "\"", entry.Key, vbCrLf, entry.Value);
                         bytes = System.Text.Encoding.UTF8.GetBytes(data);
                         httpRequestWriter.Write(bytes, 0, bytes.Length);
                     }
                 }
 
-                byte[] trailer = System.Text.Encoding.ASCII.GetBytes(Constants.vbCrLf + "--" + boundary + "--" + Constants.vbCrLf);
+                byte[] trailer = System.Text.Encoding.ASCII.GetBytes(vbCrLf + "--" + boundary + "--" + vbCrLf);
                 httpRequestWriter.Write(trailer, 0, trailer.Length);
                 httpRequestWriter.Close();
             }
@@ -1343,12 +1346,12 @@ public class HTTPHelper {
 
     private string ConvertLineFeeds(string input) {
         // Checks to see if the file is in Windows linefeed format or UNIX linefeed format.
-        if (input.Contains(Constants.vbCrLf)) {
+        if (input.Contains(vbCrLf)) {
             return input;
             // It's in Windows linefeed format so we return the output as is.
         }
         else {
-            return input.Replace(Constants.vbLf, Constants.vbCrLf);
+            return input.Replace(vbLf, vbCrLf);
             // It's in UNIX linefeed format so we have to convert it to Windows before we return the output.
         }
     }
