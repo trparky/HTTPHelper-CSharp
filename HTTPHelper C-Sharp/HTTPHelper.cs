@@ -175,8 +175,8 @@ public class HTTPHelper
     private Func<string, string> urlPreProcessor;
     private Delegate customErrorHandler;
 
-    private const string vbLf = "\n";
-    private const string vbCrLf = "\r\n";
+    private const string strLF = "\n";
+    private const string strCRLF = "\r\n";
 
     private Delegate downloadStatusUpdater;
     /// <summary>Retrieves the downloadStatusDetails data from within the Class instance.</summary>
@@ -1318,7 +1318,7 @@ public class HTTPHelper
             if (getData.Count != 0) url += "?" + GetGETDataString();
 
             string boundary = "---------------------------" + DateTime.Now.Ticks.ToString("x");
-            byte[] boundaryBytes = System.Text.Encoding.ASCII.GetBytes(Convert.ToString(vbCrLf + "--") + boundary + vbCrLf);
+            byte[] boundaryBytes = System.Text.Encoding.ASCII.GetBytes(Convert.ToString(strCRLF + "--") + boundary + strCRLF);
 
             httpWebRequest = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(url);
 
@@ -1353,12 +1353,12 @@ public class HTTPHelper
                             fileInfo = new FileInfo(formFileObjectInstance.LocalFilePath);
 
                             header = string.Format("Content-Disposition: form-data; name={0}{1}{0}; filename={0}{2}{0}", "\"", entry.Key, fileInfo.Name);
-                            header += vbCrLf + "Content-Type: " + formFileObjectInstance.ContentType + vbCrLf + vbCrLf;
+                            header += strCRLF + "Content-Type: " + formFileObjectInstance.ContentType + strCRLF + strCRLF;
                         }
                         else
                         {
                             header = string.Format("Content-Disposition: form-data; name={0}{1}{0}; filename={0}{2}{0}", "\"", entry.Key, formFileObjectInstance.RemoteFileName);
-                            header += vbCrLf + "Content-Type: " + formFileObjectInstance.ContentType + vbCrLf + vbCrLf;
+                            header += strCRLF + "Content-Type: " + formFileObjectInstance.ContentType + strCRLF + strCRLF;
                         }
 
                         bytes = System.Text.Encoding.UTF8.GetBytes(header);
@@ -1377,13 +1377,13 @@ public class HTTPHelper
                     }
                     else
                     {
-                        data = string.Format("Content-Disposition: form-data; name={0}{1}{0}{2}{2}{3}", "\"", entry.Key, vbCrLf, entry.Value);
+                        data = string.Format("Content-Disposition: form-data; name={0}{1}{0}{2}{2}{3}", "\"", entry.Key, strCRLF, entry.Value);
                         bytes = System.Text.Encoding.UTF8.GetBytes(data);
                         httpRequestWriter.Write(bytes, 0, bytes.Length);
                     }
                 }
 
-                byte[] trailer = System.Text.Encoding.ASCII.GetBytes(vbCrLf + "--" + boundary + "--" + vbCrLf);
+                byte[] trailer = System.Text.Encoding.ASCII.GetBytes(strCRLF + "--" + boundary + "--" + strCRLF);
                 httpRequestWriter.Write(trailer, 0, trailer.Length);
                 httpRequestWriter.Close();
             }
@@ -1531,14 +1531,14 @@ public class HTTPHelper
     private string ConvertLineFeeds(string input)
     {
         // Checks to see if the file is in Windows linefeed format or UNIX linefeed format.
-        if (input.Contains(vbCrLf))
+        if (input.Contains(strCRLF))
         {
             return input;
             // It's in Windows linefeed format so we return the output as is.
         }
         else
         {
-            return input.Replace(vbLf, vbCrLf);
+            return input.Replace(strLF, strCRLF);
             // It's in UNIX linefeed format so we have to convert it to Windows before we return the output.
         }
     }
