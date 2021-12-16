@@ -175,7 +175,6 @@ public class HTTPHelper
     private Func<string, string> urlPreProcessor;
     private Delegate customErrorHandler;
 
-    private const string vbCr = "\r";
     private const string vbLf = "\n";
     private const string vbCrLf = "\r\n";
 
@@ -1319,7 +1318,7 @@ public class HTTPHelper
             if (getData.Count != 0) url += "?" + GetGETDataString();
 
             string boundary = "---------------------------" + DateTime.Now.Ticks.ToString("x");
-            byte[] boundaryBytes = System.Text.Encoding.ASCII.GetBytes(Convert.ToString(vbCr + vbLf + "--") + boundary + vbCr + vbLf);
+            byte[] boundaryBytes = System.Text.Encoding.ASCII.GetBytes(Convert.ToString(vbCrLf + "--") + boundary + vbCrLf);
 
             httpWebRequest = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(url);
 
