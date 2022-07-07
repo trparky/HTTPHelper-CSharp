@@ -603,10 +603,10 @@ public class HTTPHelper
             CookieDetails cookieDetails = new CookieDetails
             {
                 cookieDomain = strDomainDomain,
-                cookiePath = strCookiePath
+                cookiePath = strCookiePath,
+                cookieData = urlEncodeHeaderContent ? System.Web.HttpUtility.UrlEncode(strCookieValue) : strCookieValue
             };
 
-            cookieDetails.cookieData = urlEncodeHeaderContent ? System.Web.HttpUtility.UrlEncode(strCookieValue) : strCookieValue;
             httpCookies.Add(strCookieName.ToLower(), cookieDetails);
         }
         else
@@ -629,10 +629,10 @@ public class HTTPHelper
             CookieDetails cookieDetails = new CookieDetails
             {
                 cookieDomain = strCookieDomain,
-                cookiePath = "/"
+                cookiePath = "/",
+                cookieData = urlEncodeHeaderContent ? System.Web.HttpUtility.UrlEncode(strCookieValue) : strCookieValue
             };
 
-            cookieDetails.cookieData = urlEncodeHeaderContent ? System.Web.HttpUtility.UrlEncode(strCookieValue) : strCookieValue;
             httpCookies.Add(strCookieName.ToLower(), cookieDetails);
         }
         else
