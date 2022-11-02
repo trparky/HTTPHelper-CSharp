@@ -332,7 +332,7 @@ public class HTTPHelper
         set { urlPreProcessor = value; }
     }
 
-    /// <summary>This wipes out most of the data in this Class instance. Once you have called this function it's recommended to set the name of your class instance to Nothing. For example... httpHelper = Nothing</summary>
+    /// <summary>This wipes out most of the data in this Class instance. Once you have called this function it's recommended to set the name of your class instance to null. For example... httpHelper = null</summary>
     public void Dispose()
     {
         additionalHTTPHeaders.Clear();
@@ -677,14 +677,14 @@ public class HTTPHelper
     /// <summary>This adds a file to be uploaded to your POST data.</summary>
     /// <param name="strFormName">The form name of the data to post.</param>
     /// <param name="strLocalFilePath">The path to the file you want to upload.</param>
-    /// <param name="strRemoteFileName">This is the name that the uploaded file will be called on the remote server. If set to Nothing the program will fill the name in.</param>
-    /// <param name="strContentType">The Content Type of the file you want to upload. You can leave it blank (or set to Nothing) and the program will try and determine what the MIME type of the file you're attaching is.</param>
+    /// <param name="strRemoteFileName">This is the name that the uploaded file will be called on the remote server. If set to null the program will fill the name in.</param>
+    /// <param name="strContentType">The Content Type of the file you want to upload. You can leave it blank (or set to null) and the program will try and determine what the MIME type of the file you're attaching is.</param>
     /// <exception cref="FileNotFoundException">If this function throws a FileNotFoundException, the Class wasn't able to find the file that you're trying to attach to the POST data on the local file system.</exception>
     /// <exception cref="noMimeTypeFoundException">If this function throws a noMimeTypeFoundException, the Class wasn't able to automatically determine the MIME type of the file you're trying to attach to the POST data.</exception>
-    /// <example>httpPostObject.addFileToUpload("file", "C:\My File.txt", "My File.txt", Nothing)</example>
+    /// <example>httpPostObject.addFileToUpload("file", "C:\My File.txt", "My File.txt", null)</example>
     /// <example>httpPostObject.addFileToUpload("file", "C:\My File.txt", "My File.txt", "text/plain")</example>
-    /// <example>httpPostObject.addFileToUpload("file", "C:\My File.txt", Nothing, Nothing)</example>
-    /// <example>httpPostObject.addFileToUpload("file", "C:\My File.txt", Nothing, "text/plain")</example>
+    /// <example>httpPostObject.addFileToUpload("file", "C:\My File.txt", null, null)</example>
+    /// <example>httpPostObject.addFileToUpload("file", "C:\My File.txt", null, "text/plain")</example>
     public void AddFileUpload(string strFormName, string strLocalFilePath, string strRemoteFileName, string strContentType, bool throwExceptionIfItemAlreadyExists = false)
     {
         FileInfo fileInfo = new FileInfo(strLocalFilePath);
