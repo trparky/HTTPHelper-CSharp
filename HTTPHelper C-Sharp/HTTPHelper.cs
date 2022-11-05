@@ -144,7 +144,7 @@ class Credentials
 /// <summary>Allows you to easily POST and upload files to a remote HTTP server without you, the programmer, knowing anything about how it all works. This class does it all for you. It handles adding a User Agent String, additional HTTP Request Headers, string data to your HTTP POST data, and files to be uploaded in the HTTP POST data.</summary>
 public class HTTPHelper
 {
-    private const string classVersion = "1.315";
+    private const string classVersion = "1.317";
     private string strUserAgentString = null;
     private bool boolUseProxy = false;
     private bool boolUseSystemProxy = true;
@@ -164,10 +164,10 @@ public class HTTPHelper
     private int intDownloadBufferSize = 8191;
 
     private string strLastHTTPServerResponse;
-    private readonly Dictionary<string, string> additionalHTTPHeaders = new Dictionary<string, string>();
-    private readonly Dictionary<string, CookieDetails> httpCookies = new Dictionary<string, CookieDetails>();
-    private readonly Dictionary<string, object> postData = new Dictionary<string, object>();
-    private readonly Dictionary<string, string> getData = new Dictionary<string, string>();
+    private readonly Dictionary<string, string> additionalHTTPHeaders = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase);
+    private readonly Dictionary<string, CookieDetails> httpCookies = new Dictionary<string, CookieDetails>(StringComparer.InvariantCultureIgnoreCase);
+    private readonly Dictionary<string, object> postData = new Dictionary<string, object>(StringComparer.InvariantCultureIgnoreCase);
+    private readonly Dictionary<string, string> getData = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase);
     private DownloadStatusDetails downloadStatusDetails;
 
     private Credentials credentials;
