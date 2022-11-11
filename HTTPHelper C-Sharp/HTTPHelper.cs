@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 public class FormFile
 {
@@ -144,7 +145,7 @@ class Credentials
 /// <summary>Allows you to easily POST and upload files to a remote HTTP server without you, the programmer, knowing anything about how it all works. This class does it all for you. It handles adding a User Agent String, additional HTTP Request Headers, string data to your HTTP POST data, and files to be uploaded in the HTTP POST data.</summary>
 public class HTTPHelper
 {
-    private const string classVersion = "1.318";
+    private const string classVersion = "1.327";
     private string strUserAgentString = null;
     private bool boolUseProxy = false;
     private bool boolUseSystemProxy = true;
@@ -534,7 +535,7 @@ public class HTTPHelper
             throw lastException;
         }
 
-        if (postData.ContainsKey(strName) & throwExceptionIfDataAlreadyExists)
+        if (postData.MyContainsKey(strName) & throwExceptionIfDataAlreadyExists)
         {
             lastException = new DataAlreadyExistsException(string.Format("The POST data key named {0}{1}{0} already exists in the POST data.", "\"", strName));
             throw lastException;
@@ -558,7 +559,7 @@ public class HTTPHelper
             throw lastException;
         }
 
-        if (getData.ContainsKey(strName) & throwExceptionIfDataAlreadyExists)
+        if (getData.MyContainsKey(strName) & throwExceptionIfDataAlreadyExists)
         {
             lastException = new DataAlreadyExistsException(string.Format("The GET data key named {0}{1}{0} already exists in the GET data.", "\"", strName));
             throw lastException;
@@ -647,7 +648,7 @@ public class HTTPHelper
     /// <returns></returns>
     public bool DoesGETDataExist(string strName)
     {
-        return getData.ContainsKey(strName);
+        return getData.MyContainsKey(strName);
     }
 
     /// <summary>Checks to see if the POST data key exists in this POST data.</summary>
@@ -655,7 +656,7 @@ public class HTTPHelper
     /// <returns></returns>
     public bool DoesPOSTDataExist(string strName)
     {
-        return postData.ContainsKey(strName);
+        return postData.MyContainsKey(strName);
     }
 
     /// <summary>Checks to see if an additional HTTP Request Header has been added to the Class.</summary>
@@ -663,7 +664,7 @@ public class HTTPHelper
     /// <returns>Boolean value; True if found, False if not found.</returns>
     public bool DoesAdditionalHeaderExist(string strHeaderName)
     {
-        return additionalHTTPHeaders.ContainsKey(strHeaderName.ToLower());
+        return additionalHTTPHeaders.MyContainsKey(strHeaderName.ToLower());
     }
 
     /// <summary>Checks to see if a cookie has been added to the Class.</summary>
@@ -671,7 +672,7 @@ public class HTTPHelper
     /// <returns>Boolean value; True if found, False if not found.</returns>
     public bool DoesCookieExist(string strCookieName)
     {
-        return httpCookies.ContainsKey(strCookieName.ToLower());
+        return httpCookies.MyContainsKey(strCookieName.ToLower());
     }
 
     /// <summary>This adds a file to be uploaded to your POST data.</summary>
@@ -694,7 +695,7 @@ public class HTTPHelper
             lastException = new FileNotFoundException("Local file not found.", strLocalFilePath);
             throw lastException;
         }
-        else if (postData.ContainsKey(strFormName))
+        else if (postData.MyContainsKey(strFormName))
         {
             if (throwExceptionIfItemAlreadyExists)
             {
@@ -1641,5 +1642,26 @@ public class HTTPHelper
         else result = "(None)";
 
         return result;
+    }
+}
+
+internal static class DictionaryExtensions
+{
+    public static bool MyContainsKey(this Dictionary<string, string> haystack, string needle)
+    {
+        KeyValuePair<string, string> KeyValuePair = haystack.FirstOrDefault<KeyValuePair<string, string>>((KeyValuePair<string, string> item) => item.Key.Trim().Equals(needle, StringComparison.OrdinalIgnoreCase));
+        return KeyValuePair.Value != null;
+    }
+
+    public static bool MyContainsKey(this Dictionary<string, object> haystack, string needle)
+    {
+        KeyValuePair<string, object> KeyValuePair = haystack.FirstOrDefault<KeyValuePair<string, object>>((KeyValuePair<string, object> item) => item.Key.Trim().Equals(needle, StringComparison.OrdinalIgnoreCase));
+        return KeyValuePair.Value != null;
+    }
+
+    public static bool MyContainsKey(this Dictionary<string, CookieDetails> haystack, string needle)
+    {
+        KeyValuePair<string, CookieDetails> KeyValuePair = haystack.FirstOrDefault<KeyValuePair<string, CookieDetails>>((KeyValuePair<string, CookieDetails> item) => item.Key.Trim().Equals(needle, StringComparison.OrdinalIgnoreCase));
+        return KeyValuePair.Value != null;
     }
 }
