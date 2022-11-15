@@ -1649,19 +1649,19 @@ internal static class DictionaryExtensions
 {
     public static bool MyContainsKey(this Dictionary<string, string> haystack, string needle)
     {
-        KeyValuePair<string, string> KeyValuePair = haystack.FirstOrDefault<KeyValuePair<string, string>>((KeyValuePair<string, string> item) => item.Key.Trim().Equals(needle, StringComparison.OrdinalIgnoreCase));
+        KeyValuePair<string, string> KeyValuePair = haystack.FirstOrDefault((KeyValuePair<string, string> item) => item.Key.Trim().Equals(needle, StringComparison.OrdinalIgnoreCase));
         return KeyValuePair.Value != null;
     }
 
     public static bool MyContainsKey(this Dictionary<string, object> haystack, string needle)
     {
-        KeyValuePair<string, object> KeyValuePair = haystack.FirstOrDefault<KeyValuePair<string, object>>((KeyValuePair<string, object> item) => item.Key.Trim().Equals(needle, StringComparison.OrdinalIgnoreCase));
+        KeyValuePair<string, object> KeyValuePair = haystack.FirstOrDefault((KeyValuePair<string, object> item) => item.Key.Trim().Equals(needle, StringComparison.OrdinalIgnoreCase));
         return KeyValuePair.Value != null;
     }
 
     public static bool MyContainsKey(this Dictionary<string, CookieDetails> haystack, string needle)
     {
-        KeyValuePair<string, CookieDetails> KeyValuePair = haystack.FirstOrDefault<KeyValuePair<string, CookieDetails>>((KeyValuePair<string, CookieDetails> item) => item.Key.Trim().Equals(needle, StringComparison.OrdinalIgnoreCase));
+        KeyValuePair<string, CookieDetails> KeyValuePair = haystack.FirstOrDefault((KeyValuePair<string, CookieDetails> item) => item.Key.Trim().Equals(needle, StringComparison.OrdinalIgnoreCase));
         return KeyValuePair.Value != null;
     }
 }
