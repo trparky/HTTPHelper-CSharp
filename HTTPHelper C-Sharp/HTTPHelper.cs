@@ -1649,18 +1649,45 @@ internal static class DictionaryExtensions
 {
     public static bool MyContainsKey(this Dictionary<string, string> haystack, string needle)
     {
+        if (string.IsNullOrEmpty(needle))
+        {
+            throw new ArgumentException($"'{nameof(needle)}' cannot be null or empty.", nameof(needle));
+        }
+        if (haystack is null)
+        {
+            throw new ArgumentNullException(nameof(haystack));
+        }
+
         KeyValuePair<string, string> KeyValuePair = haystack.FirstOrDefault((KeyValuePair<string, string> item) => item.Key.Trim().Equals(needle, StringComparison.OrdinalIgnoreCase));
         return KeyValuePair.Value != null;
     }
 
     public static bool MyContainsKey(this Dictionary<string, object> haystack, string needle)
     {
+        if (string.IsNullOrEmpty(needle))
+        {
+            throw new ArgumentException($"'{nameof(needle)}' cannot be null or empty.", nameof(needle));
+        }
+        if (haystack is null)
+        {
+            throw new ArgumentNullException(nameof(haystack));
+        }
+
         KeyValuePair<string, object> KeyValuePair = haystack.FirstOrDefault((KeyValuePair<string, object> item) => item.Key.Trim().Equals(needle, StringComparison.OrdinalIgnoreCase));
         return KeyValuePair.Value != null;
     }
 
     public static bool MyContainsKey(this Dictionary<string, CookieDetails> haystack, string needle)
     {
+        if (string.IsNullOrEmpty(needle))
+        {
+            throw new ArgumentException($"'{nameof(needle)}' cannot be null or empty.", nameof(needle));
+        }
+        if (haystack is null)
+        {
+            throw new ArgumentNullException(nameof(haystack));
+        }
+
         KeyValuePair<string, CookieDetails> KeyValuePair = haystack.FirstOrDefault((KeyValuePair<string, CookieDetails> item) => item.Key.Trim().Equals(needle, StringComparison.OrdinalIgnoreCase));
         return KeyValuePair.Value != null;
     }
