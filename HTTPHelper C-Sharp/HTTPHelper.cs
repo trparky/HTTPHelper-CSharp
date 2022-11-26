@@ -908,8 +908,8 @@ public class HTTPHelper
         catch (System.Threading.ThreadAbortException)
         {
             AbortDownloadStatusUpdaterThread();
-            if (httpWebRequest != null) httpWebRequest.Abort();
-            if (memStream != null) memStream.Dispose(); // Disposes the file stream.
+            httpWebRequest?.Abort();
+            memStream?.Dispose(); // Disposes the file stream.
             return false;
         }
         catch (Exception ex)
@@ -917,7 +917,7 @@ public class HTTPHelper
             AbortDownloadStatusUpdaterThread();
 
             lastException = ex;
-            if (memStream != null) memStream.Dispose(); // Disposes the file stream.
+            memStream?.Dispose(); // Disposes the file stream.
 
             if (!throwExceptionIfError) return false;
 
@@ -1047,8 +1047,8 @@ public class HTTPHelper
         catch (System.Threading.ThreadAbortException)
         {
             AbortDownloadStatusUpdaterThread();
-            if (httpWebRequest != null) httpWebRequest.Abort();
-            if (fileWriteStream != null) fileWriteStream.Dispose(); // Disposes the file stream.
+            httpWebRequest?.Abort();
+            fileWriteStream?.Dispose(); // Disposes the file stream.
             return false;
         }
         catch (Exception ex)
@@ -1154,7 +1154,7 @@ public class HTTPHelper
         {
             if (ex is System.Threading.ThreadAbortException)
             {
-                if (httpWebRequest != null) httpWebRequest.Abort();
+                httpWebRequest?.Abort();
                 return false;
             }
 
@@ -1247,7 +1247,7 @@ public class HTTPHelper
         {
             if (ex is System.Threading.ThreadAbortException)
             {
-                if (httpWebRequest != null) httpWebRequest.Abort();
+                httpWebRequest?.Abort();
                 return false;
             }
 
@@ -1411,7 +1411,7 @@ public class HTTPHelper
         {
             if (ex is System.Threading.ThreadAbortException)
             {
-                if (httpWebRequest != null) httpWebRequest.Abort();
+                httpWebRequest?.Abort();
             }
 
             lastException = ex;
