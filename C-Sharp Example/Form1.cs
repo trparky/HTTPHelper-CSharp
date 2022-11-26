@@ -26,7 +26,7 @@ namespace C_Sharp_Example
                 HTTPHelper.AddHTTPCookie("mycookie", "my cookie contents", "www.toms-world.org", "/");
                 HTTPHelper.AddHTTPHeader("myheader", "my header contents");
                 HTTPHelper.SetHTTPCredentials("test", "test");
-                HTTPHelper.SetURLPreProcessor = (string strURLInput) => { System.Diagnostics.Debug.WriteLine("strURLInput = " + strURLInput); return strURLInput; };
+                HTTPHelper.SetURLPreProcessor = (string strURLInput) => { System.Diagnostics.Debug.WriteLine($"strURLInput = {strURLInput}"); return strURLInput; };
 
                 // This sets up our download status updating delegate to be injected like a plugin into the HTTPHelper class instance.
                 myCustomErrorHandlerDelegate setCustomErrorHandler = (Exception ex, HTTPHelper classInstance) => { MessageBox.Show(ex.Message); };
@@ -49,7 +49,7 @@ namespace C_Sharp_Example
             catch (System.Net.WebException) {
                 // You can handle web exceptions different than normal exceptions with this code.
             }
-            catch (Exception ex) { MessageBox.Show(ex.Message + " " + ex.StackTrace); }
+            catch (Exception ex) { MessageBox.Show($"{ex.Message} {ex.StackTrace}"); }
         }
 
         private void postDataExample_Click(object sender, EventArgs e) {
@@ -66,7 +66,7 @@ namespace C_Sharp_Example
                 HTTPHelper.AddPOSTData("major", "3");
                 HTTPHelper.AddPOSTData("minor", "9");
                 HTTPHelper.AddPOSTData("build", "6");
-                HTTPHelper.SetURLPreProcessor = (string strURLInput) => { System.Diagnostics.Debug.WriteLine("strURLInput = " + strURLInput); return strURLInput; };
+                HTTPHelper.SetURLPreProcessor = (string strURLInput) => { System.Diagnostics.Debug.WriteLine($"strURLInput = {strURLInput}"); return strURLInput; };
 
                 if (HTTPHelper.GetWebData("https://www.toms-world.org/httphelper.php", ref strServerResponse))
                 {
@@ -89,7 +89,7 @@ namespace C_Sharp_Example
             {
                 // You can handle web exceptions different than normal exceptions with this code.
             }
-            catch (Exception ex) { MessageBox.Show(ex.Message + " " + ex.StackTrace); }
+            catch (Exception ex) { MessageBox.Show($"{ex.Message} {ex.StackTrace}"); }
         }
 
         private void btnUpload_Click(object sender, EventArgs e) {
@@ -121,12 +121,12 @@ namespace C_Sharp_Example
                     }
                 }
             }
-            catch (System.Net.WebException ex) { MessageBox.Show(ex.Message + " " + ex.StackTrace); }
+            catch (System.Net.WebException ex) { MessageBox.Show($"{ex.Message} {ex.StackTrace}"); }
         }
 
         private void btnStopDownload_Click(object sender, EventArgs e) {
             downloadThread.Abort();
-            if (statusThread != null) { statusThread.Abort(); }
+            statusThread?.Abort();
         }
 
         private void btnDownloadFile_Click(object sender, EventArgs e) {
@@ -141,14 +141,14 @@ namespace C_Sharp_Example
                 // First we create our delegate.
                 myDownloadStatusRoutine myDownloadStatusUpdater = (DownloadStatusDetails downloadStatusDetails) => {
                     if (HTTPHelper.EnableMultiThreadedDownloadStatusUpdates) {
-                        Label1.Text = string.Format("Downloaded {0} of {1} ({2}/s)", HTTPHelper.FileSizeToHumanReadableFormat(downloadStatusDetails.localFileSize), HTTPHelper.FileSizeToHumanReadableFormat(downloadStatusDetails.remoteFileSize), HTTPHelper.FileSizeToHumanReadableFormat(downloadStatusDetails.localFileSize - oldFileSize));
+                        Label1.Text = $"Downloaded {HTTPHelper.FileSizeToHumanReadableFormat(downloadStatusDetails.localFileSize)} of {HTTPHelper.FileSizeToHumanReadableFormat(downloadStatusDetails.remoteFileSize)} ({HTTPHelper.FileSizeToHumanReadableFormat(downloadStatusDetails.localFileSize - oldFileSize)}/s)";
                         oldFileSize = downloadStatusDetails.localFileSize;
                     }
                     else {
-                        Label1.Text = string.Format("Downloaded {0} of {1}", HTTPHelper.FileSizeToHumanReadableFormat(downloadStatusDetails.localFileSize), HTTPHelper.FileSizeToHumanReadableFormat(downloadStatusDetails.remoteFileSize));
+                        Label1.Text = $"Downloaded {HTTPHelper.FileSizeToHumanReadableFormat(downloadStatusDetails.localFileSize)} of {HTTPHelper.FileSizeToHumanReadableFormat(downloadStatusDetails.remoteFileSize)}";
                     }
 
-                    Label2.Text = downloadStatusDetails.percentageDownloaded.ToString() + "%";
+                    Label2.Text = $"{downloadStatusDetails.percentageDownloaded}%";
                     ProgressBar1.Value = downloadStatusDetails.percentageDownloaded;
                 };
                 HTTPHelper.SetDownloadStatusUpdateRoutine = myDownloadStatusUpdater; // And now we pass our delegate to the HTTPHelper class instance.
@@ -184,7 +184,7 @@ namespace C_Sharp_Example
                         btnDownloadFile.Enabled = true;
                         btnDownloadFile2.Enabled = true;
                         btnStopDownload.Enabled = false;
-                        MessageBox.Show(ex.Message + " " + ex.StackTrace);
+                        MessageBox.Show($"{ex.Message} {ex.StackTrace}");
 
                     }
                     catch (System.Threading.ThreadAbortException) {
@@ -239,7 +239,7 @@ namespace C_Sharp_Example
                     btnDownloadFile.Enabled = true;
                     btnDownloadFile2.Enabled = true;
                     btnStopDownload.Enabled = false;
-                    MessageBox.Show(ex.Message + " " + ex.StackTrace);
+                    MessageBox.Show($"{ex.Message} {ex.StackTrace}");
                 }
                 catch (System.Threading.ThreadAbortException) {
                     btnDownloadFile.Enabled = true;
@@ -260,11 +260,11 @@ namespace C_Sharp_Example
                 downloadStatusDetails = HTTPHelper.GetDownloadStatusDetails;
 
                 if (downloadStatusDetails != null) {
-                    Label1.Text = string.Format("Downloaded {0} of {1} ({2}/s)", HTTPHelper.FileSizeToHumanReadableFormat(downloadStatusDetails.localFileSize), HTTPHelper.FileSizeToHumanReadableFormat(downloadStatusDetails.remoteFileSize), HTTPHelper.FileSizeToHumanReadableFormat(downloadStatusDetails.localFileSize - oldFileSize));
+                    Label1.Text = $"Downloaded {HTTPHelper.FileSizeToHumanReadableFormat(downloadStatusDetails.localFileSize)} of {HTTPHelper.FileSizeToHumanReadableFormat(downloadStatusDetails.remoteFileSize)} ({HTTPHelper.FileSizeToHumanReadableFormat(downloadStatusDetails.localFileSize - oldFileSize)}/s)";
 
                     oldFileSize = downloadStatusDetails.localFileSize;
 
-                    Label2.Text = downloadStatusDetails.percentageDownloaded.ToString() + "%";
+                    Label2.Text = $"{downloadStatusDetails.percentageDownloaded}%";
                     ProgressBar1.Value = downloadStatusDetails.percentageDownloaded;
                 }
 

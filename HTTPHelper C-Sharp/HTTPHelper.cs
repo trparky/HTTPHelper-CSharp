@@ -145,7 +145,7 @@ class Credentials
 /// <summary>Allows you to easily POST and upload files to a remote HTTP server without you, the programmer, knowing anything about how it all works. This class does it all for you. It handles adding a User Agent String, additional HTTP Request Headers, string data to your HTTP POST data, and files to be uploaded in the HTTP POST data.</summary>
 public class HTTPHelper
 {
-    private const string classVersion = "1.328";
+    private const string classVersion = "1.329";
     private string strUserAgentString = null;
     private bool boolUseProxy = false;
     private bool boolUseSystemProxy = true;
@@ -371,7 +371,7 @@ public class HTTPHelper
     {
         System.Text.StringBuilder stringBuilder = new System.Text.StringBuilder();
         stringBuilder.AppendLine("--== HTTPHelper Class Object ==--");
-        stringBuilder.AppendLine("--== Version: " + classVersion + " ==--");
+        stringBuilder.AppendLine($"--== Version: {classVersion} ==--");
         stringBuilder.AppendLine();
         stringBuilder.AppendLine("Last Accessed URL: " + lastAccessedURL);
         stringBuilder.AppendLine();
@@ -380,7 +380,7 @@ public class HTTPHelper
         {
             foreach (KeyValuePair<string, string> item in getData)
             {
-                stringBuilder.AppendLine("GET Data | " + item.Key + "=" + item.Value);
+                stringBuilder.AppendLine($"GET Data | {item.Key}={item.Value}");
             }
         }
 
@@ -388,7 +388,7 @@ public class HTTPHelper
         {
             foreach (KeyValuePair<string, object> item in postData)
             {
-                stringBuilder.AppendLine("POST Data | " + item.Key.ToString() + "=" + item.Value.ToString());
+                stringBuilder.AppendLine($"POST Data | {item.Key}={item.Value}");
             }
         }
 
@@ -396,7 +396,7 @@ public class HTTPHelper
         {
             foreach (KeyValuePair<string, CookieDetails> item in httpCookies)
             {
-                stringBuilder.AppendLine("COOKIES | " + item.Key.ToString() + "=" + item.Value.cookieData);
+                stringBuilder.AppendLine($"COOKIES | {item.Key}={item.Value.cookieData}");
             }
         }
 
@@ -404,22 +404,22 @@ public class HTTPHelper
         {
             foreach (KeyValuePair<string, string> item in additionalHTTPHeaders)
             {
-                stringBuilder.AppendLine("Additional HTTP Header | " + item.Key.ToString() + "=" + item.Value);
+                stringBuilder.AppendLine($"Additional HTTP Header | {item.Key}={item.Value}");
             }
         }
 
         stringBuilder.AppendLine();
 
-        stringBuilder.AppendLine("User Agent String: " + strUserAgentString);
-        stringBuilder.AppendLine("Use HTTP Compression: " + boolUseHTTPCompression.ToString());
-        stringBuilder.AppendLine("HTTP Time Out: " + httpTimeOut);
-        stringBuilder.AppendLine("Use Proxy: " + boolUseProxy.ToString());
+        stringBuilder.AppendLine($"User Agent String: {strUserAgentString}");
+        stringBuilder.AppendLine($"Use HTTP Compression: {boolUseHTTPCompression}");
+        stringBuilder.AppendLine($"HTTP Time Out: {httpTimeOut}");
+        stringBuilder.AppendLine($"Use Proxy: {boolUseProxy}");
 
         if (credentials == null) stringBuilder.AppendLine("HTTP Authentication Enabled: False");
         else
         {
             stringBuilder.AppendLine("HTTP Authentication Enabled: True");
-            stringBuilder.AppendLine("HTTP Authentication Details: " + credentials.strUser + "|" + credentials.strPassword);
+            stringBuilder.AppendLine($"HTTP Authentication Details: {credentials.strUser}|{credentials.strPassword}");
         }
 
         if (lastException != null)
@@ -430,7 +430,7 @@ public class HTTPHelper
 
             if (lastException is System.Net.WebException exception)
             {
-                stringBuilder.AppendLine("Raw Exception Status Code: " + exception.Status.ToString());
+                stringBuilder.AppendLine($"Raw Exception Status Code: {exception.Status}");
             }
         }
 
@@ -719,14 +719,14 @@ public class HTTPHelper
                 string contentType;
                 if (regPath == null)
                 {
-                    lastException = new NoMimeTypeFoundException("No MIME Type found for " + fileInfo.Extension.ToLower());
+                    lastException = new NoMimeTypeFoundException($"No MIME Type found for {fileInfo.Extension.ToLower()}");
                     throw lastException;
                 }
                 else contentType = regPath.GetValue("Content Type", null).ToString();
 
                 if (string.IsNullOrEmpty(contentType))
                 {
-                    lastException = new NoMimeTypeFoundException("No MIME Type found for " + fileInfo.Extension.ToLower());
+                    lastException = new NoMimeTypeFoundException($"No MIME Type found for {fileInfo.Extension.ToLower()}");
                     throw lastException;
                 }
                 else formFileInstance.ContentType = contentType;
@@ -944,7 +944,7 @@ public class HTTPHelper
                 else if (ex2.Status == System.Net.WebExceptionStatus.NameResolutionFailure)
                 {
                     string strDomainName = System.Text.RegularExpressions.Regex.Match(lastAccessedURL, "(?:http(?:s){0,1}://){0,1}(.*)/", System.Text.RegularExpressions.RegexOptions.Singleline).Groups[1].Value;
-                    lastException = new DNSLookupError(string.Format("There was an error while looking up the DNS records for the domain name {0}{1}{0}.", "\"", strDomainName), ex2);
+                    lastException = new DNSLookupError($"There was an error while looking up the DNS records for the domain name \"{strDomainName}\".", ex2);
                     throw lastException;
                 }
 
@@ -1123,7 +1123,7 @@ public class HTTPHelper
             if (urlPreProcessor != null) url = urlPreProcessor(url);
             lastAccessedURL = url;
 
-            if (getData.Count != 0) url += "?" + GetGETDataString();
+            if (getData.Count != 0) url += $"?{GetGETDataString()}";
 
             httpWebRequest = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(url);
             httpWebRequest.AddRange(shortRangeFrom, shortRangeTo);
@@ -1217,7 +1217,7 @@ public class HTTPHelper
             if (urlPreProcessor != null) url = urlPreProcessor(url);
             lastAccessedURL = url;
 
-            if (getData.Count != 0) url += "?" + GetGETDataString();
+            if (getData.Count != 0) url += $"?{GetGETDataString()}";
 
             httpWebRequest = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(url);
 
@@ -1316,10 +1316,10 @@ public class HTTPHelper
                 lastException = new DataMissingException("Your HTTP Request contains no POST data. Please add some data to POST before calling this function.");
                 throw lastException;
             }
-            if (getData.Count != 0) url += "?" + GetGETDataString();
+            if (getData.Count != 0) url += $"?{GetGETDataString()}";
 
-            string boundary = "---------------------------" + DateTime.Now.Ticks.ToString("x");
-            byte[] boundaryBytes = System.Text.Encoding.ASCII.GetBytes(Convert.ToString(strCRLF + "--") + boundary + strCRLF);
+            string boundary = $"---------------------------{DateTime.Now.Ticks:x}";
+            byte[] boundaryBytes = System.Text.Encoding.ASCII.GetBytes($"{Convert.ToString($"{strCRLF}--")}{boundary}{strCRLF}");
 
             httpWebRequest = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(url);
 
@@ -1327,7 +1327,7 @@ public class HTTPHelper
             AddParametersToWebRequest(ref httpWebRequest);
 
             httpWebRequest.KeepAlive = true;
-            httpWebRequest.ContentType = "multipart/form-data; boundary=" + boundary;
+            httpWebRequest.ContentType = $"multipart/form-data; boundary={boundary}";
             httpWebRequest.Method = "POST";
 
             if (postData.Count != 0)
@@ -1354,12 +1354,12 @@ public class HTTPHelper
                             fileInfo = new FileInfo(formFileObjectInstance.LocalFilePath);
 
                             header = string.Format("Content-Disposition: form-data; name={0}{1}{0}; filename={0}{2}{0}", "\"", entry.Key, fileInfo.Name);
-                            header += strCRLF + "Content-Type: " + formFileObjectInstance.ContentType + strCRLF + strCRLF;
+                            header += $"{strCRLF}Content-Type: {formFileObjectInstance.ContentType}{strCRLF}{strCRLF}";
                         }
                         else
                         {
                             header = string.Format("Content-Disposition: form-data; name={0}{1}{0}; filename={0}{2}{0}", "\"", entry.Key, formFileObjectInstance.RemoteFileName);
-                            header += strCRLF + "Content-Type: " + formFileObjectInstance.ContentType + strCRLF + strCRLF;
+                            header += $"{strCRLF}Content-Type: {formFileObjectInstance.ContentType}{strCRLF}{strCRLF}";
                         }
 
                         bytes = System.Text.Encoding.UTF8.GetBytes(header);
@@ -1384,7 +1384,7 @@ public class HTTPHelper
                     }
                 }
 
-                byte[] trailer = System.Text.Encoding.ASCII.GetBytes(strCRLF + "--" + boundary + "--" + strCRLF);
+                byte[] trailer = System.Text.Encoding.ASCII.GetBytes($"{strCRLF}--{boundary}--{strCRLF}");
                 httpRequestWriter.Write(trailer, 0, trailer.Length);
                 httpRequestWriter.Close();
             }
@@ -1480,7 +1480,7 @@ public class HTTPHelper
         if (credentials != null)
         {
             httpWebRequest.PreAuthenticate = true;
-            AddHTTPHeader("Authorization", "Basic " + Convert.ToBase64String(System.Text.Encoding.Default.GetBytes(credentials.strUser + ":" + credentials.strPassword)));
+            AddHTTPHeader("Authorization", $"Basic {Convert.ToBase64String(System.Text.Encoding.Default.GetBytes($"{credentials.strUser}:{credentials.strPassword}"))}");
         }
 
         if (!string.IsNullOrWhiteSpace(strUserAgentString)) httpWebRequest.UserAgent = strUserAgentString;
@@ -1551,7 +1551,7 @@ public class HTTPHelper
         {
             if (!entry.Value.GetType().Equals(typeof(FormFile)))
             {
-                postDataString += entry.Key.ToString().Trim() + "=" + System.Web.HttpUtility.UrlEncode((string)entry.Value) + "&";
+                postDataString += $"{entry.Key.ToString().Trim()}={System.Web.HttpUtility.UrlEncode((string)entry.Value)}&";
             }
         }
 
@@ -1565,7 +1565,7 @@ public class HTTPHelper
         string getDataString = "";
         foreach (KeyValuePair<string, string> entry in getData)
         {
-            getDataString += entry.Key.ToString().Trim() + "=" + System.Web.HttpUtility.UrlEncode(entry.Value.ToString().Trim()) + "&";
+            getDataString += $"{entry.Key.ToString().Trim()}={System.Web.HttpUtility.UrlEncode(entry.Value.ToString().Trim())}&";
         }
 
         if (getDataString.EndsWith("&")) getDataString = getDataString.Substring(0, getDataString.Length - 1);
@@ -1581,32 +1581,32 @@ public class HTTPHelper
         {
             if (httpErrorResponse.StatusCode == System.Net.HttpStatusCode.InternalServerError)
             {
-                lastException = new HTTPProtocolException("HTTP Protocol Error (Server 500 Error) while accessing " + url, ex) { HTTPStatusCode = httpErrorResponse.StatusCode };
+                lastException = new HTTPProtocolException($"HTTP Protocol Error (Server 500 Error) while accessing {url}", ex) { HTTPStatusCode = httpErrorResponse.StatusCode };
             }
             else if (httpErrorResponse.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
-                lastException = new HTTPProtocolException("HTTP Protocol Error (404 File Not Found) while accessing " + url, ex) { HTTPStatusCode = httpErrorResponse.StatusCode };
+                lastException = new HTTPProtocolException($"HTTP Protocol Error (404 File Not Found) while accessing {url}", ex) { HTTPStatusCode = httpErrorResponse.StatusCode };
             }
             else if (httpErrorResponse.StatusCode == System.Net.HttpStatusCode.Unauthorized)
             {
-                lastException = new HTTPProtocolException("HTTP Protocol Error (401 Unauthorized) while accessing " + url, ex) { HTTPStatusCode = httpErrorResponse.StatusCode };
+                lastException = new HTTPProtocolException($"HTTP Protocol Error (401 Unauthorized) while accessing {url}", ex) { HTTPStatusCode = httpErrorResponse.StatusCode };
             }
             else if (httpErrorResponse.StatusCode == System.Net.HttpStatusCode.ServiceUnavailable)
             {
-                lastException = new HTTPProtocolException("HTTP Protocol Error (503 Service Unavailable) while accessing " + url, ex) { HTTPStatusCode = httpErrorResponse.StatusCode };
+                lastException = new HTTPProtocolException($"HTTP Protocol Error (503 Service Unavailable) while accessing {url}", ex) { HTTPStatusCode = httpErrorResponse.StatusCode };
             }
             else if (httpErrorResponse.StatusCode == System.Net.HttpStatusCode.Forbidden)
             {
-                lastException = new HTTPProtocolException("HTTP Protocol Error (403 Forbidden) while accessing " + url, ex) { HTTPStatusCode = httpErrorResponse.StatusCode };
+                lastException = new HTTPProtocolException($"HTTP Protocol Error (403 Forbidden) while accessing {url}", ex) { HTTPStatusCode = httpErrorResponse.StatusCode };
             }
             else
             {
-                lastException = new HTTPProtocolException("HTTP Protocol Error while accessing " + url, ex) { HTTPStatusCode = httpErrorResponse.StatusCode };
+                lastException = new HTTPProtocolException($"HTTP Protocol Error while accessing {url}", ex) { HTTPStatusCode = httpErrorResponse.StatusCode };
             }
         }
         else
         {
-            lastException = new HTTPProtocolException("HTTP Protocol Error while accessing " + url, ex);
+            lastException = new HTTPProtocolException($"HTTP Protocol Error while accessing {url}", ex);
         }
 
         return lastException;
@@ -1618,26 +1618,26 @@ public class HTTPHelper
         if (roundToNearestWholeNumber) { shortRoundNumber = 0; } else { shortRoundNumber = 2; }
 
         string result;
-        if (size <= Math.Pow(2, 10)) result = size + " Bytes";
+        if (size <= Math.Pow(2, 10)) result = $"{size} Bytes";
         else if (size > Math.Pow(2, 10) & size <= Math.Pow(2, 20))
         {
-            result = Math.Round(size / Math.Pow(2, 10), shortRoundNumber) + " KBs";
+            result = $"{Math.Round(size / Math.Pow(2, 10), shortRoundNumber)} KBs";
         }
         else if (size > Math.Pow(2, 20) & size <= Math.Pow(2, 30))
         {
-            result = Math.Round(size / Math.Pow(2, 20), shortRoundNumber) + " MBs";
+            result = $"{Math.Round(size / Math.Pow(2, 20), shortRoundNumber)} MBs";
         }
         else if (size > Math.Pow(2, 30) & size <= Math.Pow(2, 40))
         {
-            result = Math.Round(size / Math.Pow(2, 30), shortRoundNumber) + " GBs";
+            result = $"{Math.Round(size / Math.Pow(2, 30), shortRoundNumber)} GBs";
         }
         else if (size > Math.Pow(2, 40) & size <= Math.Pow(2, 50))
         {
-            result = Math.Round(size / Math.Pow(2, 40), shortRoundNumber) + " TBs";
+            result = $"{Math.Round(size / Math.Pow(2, 40), shortRoundNumber)} TBs";
         }
         else if (size > Math.Pow(2, 50) & size <= Math.Pow(2, 60))
         {
-            result = Math.Round(size / Math.Pow(2, 50), shortRoundNumber) + " PBs";
+            result = $"{Math.Round(size / Math.Pow(2, 50), shortRoundNumber)} PBs";
         }
         else result = "(None)";
 
