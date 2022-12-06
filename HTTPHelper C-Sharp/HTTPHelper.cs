@@ -373,7 +373,7 @@ public class HTTPHelper
         stringBuilder.AppendLine("--== HTTPHelper Class Object ==--");
         stringBuilder.AppendLine($"--== Version: {classVersion} ==--");
         stringBuilder.AppendLine();
-        stringBuilder.AppendLine("Last Accessed URL: " + lastAccessedURL);
+        stringBuilder.AppendLine($"Last Accessed URL: {lastAccessedURL}");
         stringBuilder.AppendLine();
 
         if (getData.Count != 0)
