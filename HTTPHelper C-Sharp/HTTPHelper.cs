@@ -145,7 +145,7 @@ class Credentials
 /// <summary>Allows you to easily POST and upload files to a remote HTTP server without you, the programmer, knowing anything about how it all works. This class does it all for you. It handles adding a User Agent String, additional HTTP Request Headers, string data to your HTTP POST data, and files to be uploaded in the HTTP POST data.</summary>
 public class HTTPHelper
 {
-    private const string classVersion = "1.329";
+    private const string classVersion = "1.330";
     private string strUserAgentString = null;
     private bool boolUseProxy = false;
     private bool boolUseSystemProxy = true;
@@ -1658,8 +1658,7 @@ internal static class DictionaryExtensions
             throw new ArgumentNullException(nameof(haystack));
         }
 
-        KeyValuePair<string, string> KeyValuePair = haystack.FirstOrDefault((KeyValuePair<string, string> item) => item.Key.Trim().Equals(needle, StringComparison.OrdinalIgnoreCase));
-        return KeyValuePair.Value != null;
+        return haystack.Keys.Any(key => key.Trim().Equals(needle, StringComparison.OrdinalIgnoreCase));
     }
 
     public static bool MyContainsKey(this Dictionary<string, object> haystack, string needle)
@@ -1673,8 +1672,7 @@ internal static class DictionaryExtensions
             throw new ArgumentNullException(nameof(haystack));
         }
 
-        KeyValuePair<string, object> KeyValuePair = haystack.FirstOrDefault((KeyValuePair<string, object> item) => item.Key.Trim().Equals(needle, StringComparison.OrdinalIgnoreCase));
-        return KeyValuePair.Value != null;
+        return haystack.Keys.Any(key => key.Trim().Equals(needle, StringComparison.OrdinalIgnoreCase));
     }
 
     public static bool MyContainsKey(this Dictionary<string, CookieDetails> haystack, string needle)
@@ -1688,7 +1686,6 @@ internal static class DictionaryExtensions
             throw new ArgumentNullException(nameof(haystack));
         }
 
-        KeyValuePair<string, CookieDetails> KeyValuePair = haystack.FirstOrDefault((KeyValuePair<string, CookieDetails> item) => item.Key.Trim().Equals(needle, StringComparison.OrdinalIgnoreCase));
-        return KeyValuePair.Value != null;
+        return haystack.Keys.Any(key => key.Trim().Equals(needle, StringComparison.OrdinalIgnoreCase));
     }
 }
