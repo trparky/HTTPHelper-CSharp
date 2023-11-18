@@ -363,3 +363,4 @@ MigrationBackup/
 FodyWeavers.xsd
 
 /Compile this thing!.bat
+/Do GIT GC.ps1
