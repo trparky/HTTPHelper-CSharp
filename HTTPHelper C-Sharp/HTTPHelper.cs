@@ -145,7 +145,7 @@ class Credentials
 /// <summary>Allows you to easily POST and upload files to a remote HTTP server without you, the programmer, knowing anything about how it all works. This class does it all for you. It handles adding a User Agent String, additional HTTP Request Headers, string data to your HTTP POST data, and files to be uploaded in the HTTP POST data.</summary>
 public class HTTPHelper
 {
-    private const string classVersion = "1.330";
+    private const string classVersion = "1.331";
     private string strUserAgentString = null;
     private bool boolUseProxy = false;
     private bool boolUseSystemProxy = true;
@@ -955,6 +955,92 @@ public class HTTPHelper
             return false;
         }
     }
+
+    /// <summary>Gets the file size of a file on a remote HTTP server..</summary>
+
+    /// ''' <param name="fileDownloadURL">The HTTP Path to a file on a remote server to check the size of.</param>
+
+    /// ''' <param name="throwExceptionIfError">Normally True. If True this function will throw an exception if an error occurs. If set to False, the function simply returns False if an error occurs; this is a much more simpler way to handle errors.</param>
+
+    /// ''' <exception cref="Net.WebException">If this function throws a Net.WebException then something failed during the HTTP request.</exception>
+
+    /// ''' <exception cref="Exception">If this function throws a general Exception, something really went wrong; something that the function normally doesn't handle.</exception>
+
+    /// ''' <exception cref="HttpProtocolException">This exception is thrown if the server responds with an HTTP Error.</exception>
+
+    /// ''' <exception cref="SslErrorException">If this function throws an sslErrorException, an error occurred while negotiating an SSL connection.</exception>
+
+    /// ''' <exception cref="DnsLookupError">If this function throws a dnsLookupError exception it means that the domain name wasn't able to be resolved properly.</exception>
+    public bool GetRemoteFileSize(string fileDownloadURL, ref long longRemoteFileSize, bool throwExceptionIfError = true)
+    {
+        System.Net.HttpWebRequest httpWebRequest = null;
+
+        try
+        {
+            if (urlPreProcessor != null) fileDownloadURL = urlPreProcessor(fileDownloadURL);
+            lastAccessedURL = fileDownloadURL;
+
+            httpWebRequest = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(fileDownloadURL);
+            httpWebRequest.Method = "HEAD";
+
+            ConfigureProxy(ref httpWebRequest);
+            AddParametersToWebRequest(ref httpWebRequest);
+
+            using (System.Net.WebResponse webResponse = httpWebRequest.GetResponse()) // We now get the web response.
+            {
+                CaptureSSLInfo(fileDownloadURL, ref httpWebRequest);
+
+                // Gets the size of the remote file on the web server.
+                longRemoteFileSize = webResponse.ContentLength;
+                return true;
+            }
+        }
+        catch (System.Threading.ThreadAbortException)
+        {
+            httpWebRequest?.Abort();
+            return false;
+        }
+        catch (Exception ex)
+        {
+            lastException = ex;
+
+            if (!throwExceptionIfError) return false;
+
+            if (customErrorHandler != null)
+            {
+                customErrorHandler.DynamicInvoke(ex, this);
+                // Since we handled the exception with an injected custom error handler, we can now exit the function with the return of a False value.
+                return false;
+            }
+
+            if (ex is System.Net.WebException)
+            {
+                System.Net.WebException ex2 = (System.Net.WebException)ex;
+
+                if (ex2.Status == System.Net.WebExceptionStatus.ProtocolError)
+                {
+                    throw HandleWebExceptionProtocolError(fileDownloadURL, ex2);
+                }
+                else if (ex2.Status == System.Net.WebExceptionStatus.TrustFailure)
+                {
+                    lastException = new SSLErrorException("There was an error establishing an SSL connection.", ex2);
+                    throw lastException;
+                }
+                else if (ex2.Status == System.Net.WebExceptionStatus.NameResolutionFailure)
+                {
+                    string strDomainName = System.Text.RegularExpressions.Regex.Match(lastAccessedURL, "(?:http(?:s){0,1}://){0,1}(.*)/", System.Text.RegularExpressions.RegexOptions.Singleline).Groups[1].Value;
+                    lastException = new DNSLookupError(string.Format("There was an error while looking up the DNS records for the domain name {0}{1}{0}.", "\"", strDomainName), ex2);
+                    throw lastException;
+                }
+
+                lastException = new System.Net.WebException(ex.Message, ex2);
+                throw lastException;
+            }
+
+            return false;
+        }
+    }
+
 
     /// <summary>Downloads a file from a web server while feeding back the status of the download. You can find the percentage of the download in the httpDownloadProgressPercentage variable.</summary>
     /// <param name="fileDownloadURL">The HTTP Path to a file on a remote server to download.</param>
