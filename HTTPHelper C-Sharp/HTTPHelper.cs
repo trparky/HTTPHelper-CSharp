@@ -145,7 +145,7 @@ class Credentials
 /// <summary>Allows you to easily POST and upload files to a remote HTTP server without you, the programmer, knowing anything about how it all works. This class does it all for you. It handles adding a User Agent String, additional HTTP Request Headers, string data to your HTTP POST data, and files to be uploaded in the HTTP POST data.</summary>
 public class HTTPHelper
 {
-    private const string classVersion = "1.331";
+    private const string classVersion = "1.332";
     private string strUserAgentString = null;
     private bool boolUseProxy = false;
     private bool boolUseSystemProxy = true;
@@ -180,6 +180,14 @@ public class HTTPHelper
     private const string strCRLF = "\r\n";
 
     private Delegate downloadStatusUpdater;
+
+    public struct RemoteFileStats
+    {
+        public long contentLength;
+        public string contentType;
+        public System.Net.WebHeaderCollection headers;
+    }
+
     /// <summary>Retrieves the downloadStatusDetails data from within the Class instance.</summary>
     /// <returns>A downloadStatusDetails Object.</returns>
     public DownloadStatusDetails GetDownloadStatusDetails
@@ -964,7 +972,7 @@ public class HTTPHelper
     /// ''' <exception cref="HttpProtocolException">This exception is thrown if the server responds with an HTTP Error.</exception>
     /// ''' <exception cref="SslErrorException">If this function throws an sslErrorException, an error occurred while negotiating an SSL connection.</exception>
     /// ''' <exception cref="DnsLookupError">If this function throws a dnsLookupError exception it means that the domain name wasn't able to be resolved properly.</exception>
-    public bool GetRemoteFileSize(string fileDownloadURL, ref long longRemoteFileSize, bool throwExceptionIfError = true)
+    public bool GetRemoteFileStats(string fileDownloadURL, ref RemoteFileStats RemoteFileStats, bool throwExceptionIfError = true)
     {
         System.Net.HttpWebRequest httpWebRequest = null;
 
@@ -984,7 +992,10 @@ public class HTTPHelper
                 CaptureSSLInfo(fileDownloadURL, ref httpWebRequest);
 
                 // Gets the size of the remote file on the web server.
-                longRemoteFileSize = webResponse.ContentLength;
+                RemoteFileStats.contentLength = webResponse.ContentLength;
+                RemoteFileStats.contentType = webResponse.ContentType;
+                RemoteFileStats.headers = webResponse.Headers;
+
                 return true;
             }
         }
