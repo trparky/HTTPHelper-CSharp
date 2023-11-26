@@ -957,19 +957,12 @@ public class HTTPHelper
     }
 
     /// <summary>Gets the file size of a file on a remote HTTP server..</summary>
-
     /// ''' <param name="fileDownloadURL">The HTTP Path to a file on a remote server to check the size of.</param>
-
     /// ''' <param name="throwExceptionIfError">Normally True. If True this function will throw an exception if an error occurs. If set to False, the function simply returns False if an error occurs; this is a much more simpler way to handle errors.</param>
-
     /// ''' <exception cref="Net.WebException">If this function throws a Net.WebException then something failed during the HTTP request.</exception>
-
     /// ''' <exception cref="Exception">If this function throws a general Exception, something really went wrong; something that the function normally doesn't handle.</exception>
-
     /// ''' <exception cref="HttpProtocolException">This exception is thrown if the server responds with an HTTP Error.</exception>
-
     /// ''' <exception cref="SslErrorException">If this function throws an sslErrorException, an error occurred while negotiating an SSL connection.</exception>
-
     /// ''' <exception cref="DnsLookupError">If this function throws a dnsLookupError exception it means that the domain name wasn't able to be resolved properly.</exception>
     public bool GetRemoteFileSize(string fileDownloadURL, ref long longRemoteFileSize, bool throwExceptionIfError = true)
     {
