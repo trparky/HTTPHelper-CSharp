@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.TextBox1 = new System.Windows.Forms.TextBox();
-            this.WebBrowser1 = new System.Windows.Forms.WebBrowser();
+            this.WebView21 = new Microsoft.Web.WebView2.WinForms.WebView2();
             this.btnDownloadFile2 = new System.Windows.Forms.Button();
             this.Label2 = new System.Windows.Forms.Label();
             this.Button1 = new System.Windows.Forms.Button();
@@ -41,6 +41,7 @@
             this.postDataExample = new System.Windows.Forms.Button();
             this.btnGetWebPageData = new System.Windows.Forms.Button();
             this.OpenFileDialog = new System.Windows.Forms.OpenFileDialog();
+            ((System.ComponentModel.ISupportInitialize)(this.WebView21)).BeginInit();
             this.SuspendLayout();
             // 
             // TextBox1
@@ -54,16 +55,16 @@
             this.TextBox1.Size = new System.Drawing.Size(804, 186);
             this.TextBox1.TabIndex = 4;
             // 
-            // WebBrowser1
+            // WebView21
             // 
-            this.WebBrowser1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.WebBrowser1.Location = new System.Drawing.Point(12, 108);
-            this.WebBrowser1.MinimumSize = new System.Drawing.Size(20, 20);
-            this.WebBrowser1.Name = "WebBrowser1";
-            this.WebBrowser1.Size = new System.Drawing.Size(804, 269);
-            this.WebBrowser1.TabIndex = 5;
+            this.WebView21.AllowExternalDrop = true;
+            this.WebView21.CreationProperties = null;
+            this.WebView21.DefaultBackgroundColor = System.Drawing.Color.White;
+            this.WebView21.Location = new System.Drawing.Point(15, 108);
+            this.WebView21.Name = "webView21";
+            this.WebView21.Size = new System.Drawing.Size(801, 269);
+            this.WebView21.TabIndex = 22;
+            this.WebView21.ZoomFactor = 1D;
             // 
             // btnDownloadFile2
             // 
@@ -179,11 +180,12 @@
             this.Controls.Add(this.ProgressBar1);
             this.Controls.Add(this.postDataExample);
             this.Controls.Add(this.btnGetWebPageData);
-            this.Controls.Add(this.WebBrowser1);
+            this.Controls.Add(this.WebView21);
             this.Controls.Add(this.TextBox1);
             this.Name = "Form1";
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.WebView21)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -192,7 +194,7 @@
         #endregion
 
         internal System.Windows.Forms.TextBox TextBox1;
-        internal System.Windows.Forms.WebBrowser WebBrowser1;
+        private Microsoft.Web.WebView2.WinForms.WebView2 WebView21;
         internal System.Windows.Forms.Button btnDownloadFile2;
         internal System.Windows.Forms.Label Label2;
         internal System.Windows.Forms.Button Button1;

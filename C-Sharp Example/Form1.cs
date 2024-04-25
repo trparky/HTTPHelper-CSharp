@@ -34,7 +34,7 @@ namespace C_Sharp_Example
                 // This sets up our download status updating delegate to be injected like a plugin into the HTTPHelper class instance.
 
                 if (HTTPHelper.GetWebData("https://www.toms-world.org/php/phpinfo.php", ref strServerResponse)) {
-                    WebBrowser1.DocumentText = strServerResponse;
+                    WebView21.NavigateToString(strServerResponse);
                     TextBox1.Text = HTTPHelper.GetHTTPResponseHeaders(true).ToString();
 
                     X509Certificate2 certDetails = HTTPHelper.GetCertificateDetails(false);
@@ -70,7 +70,7 @@ namespace C_Sharp_Example
 
                 if (HTTPHelper.GetWebData("https://www.toms-world.org/httphelper.php", ref strServerResponse))
                 {
-                    WebBrowser1.DocumentText = strServerResponse;
+                    WebView21.NavigateToString(strServerResponse);
                     TextBox1.Text = HTTPHelper.GetHTTPResponseHeaders().ToString();
 
                     X509Certificate2 certDetails = HTTPHelper.GetCertificateDetails(false);
@@ -113,7 +113,7 @@ namespace C_Sharp_Example
                     HTTPHelper.AddFileUpload("myfileupload", OpenFileDialog.FileName, null, null);
 
                     if (HTTPHelper.UploadData("https://www.toms-world.org/httphelper.php", ref strServerResponse)) {
-                        WebBrowser1.DocumentText = strServerResponse;
+                        WebView21.NavigateToString(strServerResponse);
                         TextBox1.Text = HTTPHelper.GetHTTPResponseHeaders().ToString();
 
                         X509Certificate2 certDetails = HTTPHelper.GetCertificateDetails(false);
