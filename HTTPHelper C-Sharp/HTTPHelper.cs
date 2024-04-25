@@ -718,7 +718,7 @@ public class HTTPHelper
             {
                 FormName = strFormName,
                 LocalFilePath = strLocalFilePath,
-                RemoteFileName = strRemoteFileName
+                RemoteFileName = string.IsNullOrWhiteSpace(strRemoteFileName) ? new FileInfo(strLocalFilePath).Name : strRemoteFileName
             };
             if (string.IsNullOrEmpty(strContentType))
             {
