@@ -1619,19 +1619,12 @@ public class HTTPHelper
         }
     }
 
-    private string ConvertLineFeeds(string input)
+    public static string ConvertLineFeeds(string input)
     {
-        // Checks to see if the file is in Windows linefeed format or UNIX linefeed format.
-        if (input.Contains(strCRLF))
-        {
-            return input;
-            // It's in Windows linefeed format so we return the output as is.
-        }
-        else
-        {
-            return input.Replace(strLF, strCRLF);
-            // It's in UNIX linefeed format so we have to convert it to Windows before we return the output.
-        }
+        input = input.Replace("\r\n", "\n"); // Temporarily replace all CRLF with LF
+        input = input.Replace("\r", "\n"); // Convert standalone CR to LF
+        input = input.Replace("\n", "\r\n"); // Finally, replace all LF with CRLF
+        return input;
     }
 
     private string GetPOSTDataString()
