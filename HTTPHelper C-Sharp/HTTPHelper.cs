@@ -145,7 +145,7 @@ class Credentials
 /// <summary>Allows you to easily POST and upload files to a remote HTTP server without you, the programmer, knowing anything about how it all works. This class does it all for you. It handles adding a User Agent String, additional HTTP Request Headers, string data to your HTTP POST data, and files to be uploaded in the HTTP POST data.</summary>
 public class HTTPHelper
 {
-    private const string classVersion = "1.334";
+    private const string classVersion = "1.335";
     private string strUserAgentString = null;
     private bool boolUseProxy = false;
     private bool boolUseSystemProxy = true;
@@ -722,22 +722,28 @@ public class HTTPHelper
             };
             if (string.IsNullOrEmpty(strContentType))
             {
+                Object rawRegValue;
                 Microsoft.Win32.RegistryKey regPath = Microsoft.Win32.Registry.ClassesRoot.OpenSubKey(fileInfo.Extension.ToLower(), false);
 
-                string contentType;
                 if (regPath == null)
                 {
                     lastException = new NoMimeTypeFoundException($"No MIME Type found for {fileInfo.Extension.ToLower()}");
                     throw lastException;
                 }
-                else contentType = regPath.GetValue("Content Type", null).ToString();
-
-                if (string.IsNullOrEmpty(contentType))
+                else
                 {
-                    lastException = new NoMimeTypeFoundException($"No MIME Type found for {fileInfo.Extension.ToLower()}");
-                    throw lastException;
+                    rawRegValue = regPath.GetValue("Content Type", null);
+
+                    if (rawRegValue == null)
+                    {
+                        lastException = new NoMimeTypeFoundException($"No MIME Type found for {fileInfo.Extension.ToLower()}");
+                        throw lastException;
+                    }
+                    else
+                    {
+                        formFileInstance.ContentType = rawRegValue.ToString();
+                    }
                 }
-                else formFileInstance.ContentType = contentType;
             }
             else formFileInstance.ContentType = strContentType;
 
