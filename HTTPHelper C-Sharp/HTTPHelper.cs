@@ -145,7 +145,7 @@ class Credentials
 /// <summary>Allows you to easily POST and upload files to a remote HTTP server without you, the programmer, knowing anything about how it all works. This class does it all for you. It handles adding a User Agent String, additional HTTP Request Headers, string data to your HTTP POST data, and files to be uploaded in the HTTP POST data.</summary>
 public class HTTPHelper
 {
-    private const string classVersion = "1.335";
+    private const string classVersion = "1.336";
     private string strUserAgentString = null;
     private bool boolUseProxy = false;
     private bool boolUseSystemProxy = true;
@@ -1228,23 +1228,21 @@ public class HTTPHelper
             AddParametersToWebRequest(ref httpWebRequest);
             AddPostDataToWebRequest(ref httpWebRequest);
 
-            System.Net.WebResponse httpWebResponse = httpWebRequest.GetResponse();
-            CaptureSSLInfo(url, ref httpWebRequest);
+            using (System.Net.WebResponse httpWebResponse = httpWebRequest.GetResponse())
+            {
+                CaptureSSLInfo(url, ref httpWebRequest);
 
-            StreamReader httpInStream = new StreamReader(httpWebResponse.GetResponseStream());
-            string httpTextOutput = httpInStream.ReadToEnd().Trim();
-            httpResponseHeaders = httpWebResponse.Headers;
+                using (StreamReader httpInStream = new StreamReader(httpWebResponse.GetResponseStream()))
+                {
+                    string httpTextOutput = httpInStream.ReadToEnd().Trim();
+                    httpResponseHeaders = httpWebResponse.Headers;
 
-            httpInStream.Dispose();
+                    httpResponseText = ConvertLineFeeds(httpTextOutput).Trim();
+                    strLastHTTPServerResponse = httpResponseText;
 
-            httpWebResponse.Close();
-            httpWebResponse = null;
-            httpWebRequest = null;
-
-            httpResponseText = ConvertLineFeeds(httpTextOutput).Trim();
-            strLastHTTPServerResponse = httpResponseText;
-
-            return true;
+                    return true;
+                }
+            }
         }
         catch (Exception ex)
         {
@@ -1321,23 +1319,21 @@ public class HTTPHelper
             AddParametersToWebRequest(ref httpWebRequest);
             AddPostDataToWebRequest(ref httpWebRequest);
 
-            System.Net.WebResponse httpWebResponse = httpWebRequest.GetResponse();
-            CaptureSSLInfo(url, ref httpWebRequest);
+            using (System.Net.WebResponse httpWebResponse = httpWebRequest.GetResponse())
+            {
+                CaptureSSLInfo(url, ref httpWebRequest);
 
-            StreamReader httpInStream = new StreamReader(httpWebResponse.GetResponseStream());
-            string httpTextOutput = httpInStream.ReadToEnd().Trim();
-            httpResponseHeaders = httpWebResponse.Headers;
+                using (StreamReader httpInStream = new StreamReader(httpWebResponse.GetResponseStream()))
+                {
+                    string httpTextOutput = httpInStream.ReadToEnd().Trim();
+                    httpResponseHeaders = httpWebResponse.Headers;
 
-            httpInStream.Dispose();
+                    httpResponseText = ConvertLineFeeds(httpTextOutput).Trim();
+                    strLastHTTPServerResponse = httpResponseText;
 
-            httpWebResponse.Close();
-            httpWebResponse = null;
-            httpWebRequest = null;
-
-            httpResponseText = ConvertLineFeeds(httpTextOutput).Trim();
-            strLastHTTPServerResponse = httpResponseText;
-
-            return true;
+                    return true;
+                }
+            }
         }
         catch (Exception ex)
         {
@@ -1428,80 +1424,76 @@ public class HTTPHelper
 
             if (postData.Count != 0)
             {
-                Stream httpRequestWriter = httpWebRequest.GetRequestStream();
-                string header = null;
-                FileInfo fileInfo = default;
-                FormFile formFileObjectInstance = null;
-                byte[] bytes = null;
-                byte[] buffer = null;
-                FileStream fileStream = default;
-                string data = null;
-
-                foreach (KeyValuePair<string, object> entry in postData)
+                using (Stream httpRequestWriter = httpWebRequest.GetRequestStream())
                 {
-                    httpRequestWriter.Write(boundaryBytes, 0, boundaryBytes.Length);
+                    string header = null;
+                    FileInfo fileInfo = default;
+                    FormFile formFileObjectInstance = null;
+                    byte[] bytes = null;
+                    byte[] buffer = null;
+                    FileStream fileStream = default;
+                    string data = null;
 
-                    if (entry.Value is FormFile file)
+                    foreach (KeyValuePair<string, object> entry in postData)
                     {
-                        formFileObjectInstance = file;
+                        httpRequestWriter.Write(boundaryBytes, 0, boundaryBytes.Length);
 
-                        if (string.IsNullOrEmpty(formFileObjectInstance.RemoteFileName))
+                        if (entry.Value is FormFile file)
                         {
-                            fileInfo = new FileInfo(formFileObjectInstance.LocalFilePath);
+                            formFileObjectInstance = file;
 
-                            header = string.Format("Content-Disposition: form-data; name={0}{1}{0}; filename={0}{2}{0}", "\"", entry.Key, fileInfo.Name);
-                            header += $"{strCRLF}Content-Type: {formFileObjectInstance.ContentType}{strCRLF}{strCRLF}";
+                            if (string.IsNullOrEmpty(formFileObjectInstance.RemoteFileName))
+                            {
+                                fileInfo = new FileInfo(formFileObjectInstance.LocalFilePath);
+
+                                header = string.Format("Content-Disposition: form-data; name={0}{1}{0}; filename={0}{2}{0}", "\"", entry.Key, fileInfo.Name);
+                                header += $"{strCRLF}Content-Type: {formFileObjectInstance.ContentType}{strCRLF}{strCRLF}";
+                            }
+                            else
+                            {
+                                header = string.Format("Content-Disposition: form-data; name={0}{1}{0}; filename={0}{2}{0}", "\"", entry.Key, formFileObjectInstance.RemoteFileName);
+                                header += $"{strCRLF}Content-Type: {formFileObjectInstance.ContentType}{strCRLF}{strCRLF}";
+                            }
+
+                            bytes = System.Text.Encoding.UTF8.GetBytes(header);
+                            httpRequestWriter.Write(bytes, 0, bytes.Length);
+
+                            fileStream = new FileStream(formFileObjectInstance.LocalFilePath, FileMode.Open);
+                            buffer = new byte[32769];
+
+                            while (fileStream.Read(buffer, 0, buffer.Length) != 0)
+                            {
+                                httpRequestWriter.Write(buffer, 0, buffer.Length);
+                            }
                         }
                         else
                         {
-                            header = string.Format("Content-Disposition: form-data; name={0}{1}{0}; filename={0}{2}{0}", "\"", entry.Key, formFileObjectInstance.RemoteFileName);
-                            header += $"{strCRLF}Content-Type: {formFileObjectInstance.ContentType}{strCRLF}{strCRLF}";
+                            data = string.Format("Content-Disposition: form-data; name={0}{1}{0}{2}{2}{3}", "\"", entry.Key, strCRLF, entry.Value);
+                            bytes = System.Text.Encoding.UTF8.GetBytes(data);
+                            httpRequestWriter.Write(bytes, 0, bytes.Length);
                         }
-
-                        bytes = System.Text.Encoding.UTF8.GetBytes(header);
-                        httpRequestWriter.Write(bytes, 0, bytes.Length);
-
-                        fileStream = new FileStream(formFileObjectInstance.LocalFilePath, FileMode.Open);
-                        buffer = new byte[32769];
-
-                        while (fileStream.Read(buffer, 0, buffer.Length) != 0)
-                        {
-                            httpRequestWriter.Write(buffer, 0, buffer.Length);
-                        }
-
-                        fileStream.Dispose();
-                        fileStream = null;
                     }
-                    else
-                    {
-                        data = string.Format("Content-Disposition: form-data; name={0}{1}{0}{2}{2}{3}", "\"", entry.Key, strCRLF, entry.Value);
-                        bytes = System.Text.Encoding.UTF8.GetBytes(data);
-                        httpRequestWriter.Write(bytes, 0, bytes.Length);
-                    }
+
+                    byte[] trailer = System.Text.Encoding.ASCII.GetBytes($"{strCRLF}--{boundary}--{strCRLF}");
+                    httpRequestWriter.Write(trailer, 0, trailer.Length);
                 }
-
-                byte[] trailer = System.Text.Encoding.ASCII.GetBytes($"{strCRLF}--{boundary}--{strCRLF}");
-                httpRequestWriter.Write(trailer, 0, trailer.Length);
-                httpRequestWriter.Close();
             }
 
-            System.Net.WebResponse httpWebResponse = httpWebRequest.GetResponse();
-            CaptureSSLInfo(url, ref httpWebRequest);
+            using (System.Net.WebResponse httpWebResponse = httpWebRequest.GetResponse())
+            {
+                CaptureSSLInfo(url, ref httpWebRequest);
 
-            StreamReader httpInStream = new StreamReader(httpWebResponse.GetResponseStream());
-            string httpTextOutput = httpInStream.ReadToEnd().Trim();
-            httpResponseHeaders = httpWebResponse.Headers;
+                using (StreamReader httpInStream = new StreamReader(httpWebResponse.GetResponseStream()))
+                {
+                    string httpTextOutput = httpInStream.ReadToEnd().Trim();
+                    httpResponseHeaders = httpWebResponse.Headers;
 
-            httpInStream.Dispose();
+                    httpResponseText = ConvertLineFeeds(httpTextOutput).Trim();
+                    strLastHTTPServerResponse = httpResponseText;
 
-            httpWebResponse.Dispose();
-            httpWebResponse = null;
-            httpWebRequest = null;
-
-            httpResponseText = ConvertLineFeeds(httpTextOutput).Trim();
-            strLastHTTPServerResponse = httpResponseText;
-
-            return true;
+                    return true;
+                }
+            }
         }
         catch (Exception ex)
         {
@@ -1564,10 +1556,11 @@ public class HTTPHelper
             httpWebRequest.ContentType = "application/x-www-form-urlencoded";
             httpWebRequest.ContentLength = postDataString.Length;
 
-            dynamic httpRequestWriter = new StreamWriter(httpWebRequest.GetRequestStream());
-            httpRequestWriter.Write(postDataString);
-            httpRequestWriter.Close();
-            httpRequestWriter.Dispose();
+            using (dynamic httpRequestWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
+            {
+                httpRequestWriter.Write(postDataString);
+            }
+
         }
     }
 
