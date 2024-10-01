@@ -923,7 +923,6 @@ public class HTTPHelper
         {
             AbortDownloadStatusUpdaterThread();
             httpWebRequest?.Abort();
-            memStream?.Dispose(); // Disposes the file stream.
             return false;
         }
         catch (Exception ex)
@@ -931,7 +930,6 @@ public class HTTPHelper
             AbortDownloadStatusUpdaterThread();
 
             lastException = ex;
-            memStream?.Dispose(); // Disposes the file stream.
 
             if (!throwExceptionIfError) return false;
 
@@ -967,6 +965,10 @@ public class HTTPHelper
             }
 
             return false;
+        }
+        finally
+        {
+            memStream?.Dispose(); // Disposes the file stream.
         }
     }
 
@@ -1065,135 +1067,124 @@ public class HTTPHelper
     /// <exception cref="dnsLookupError">If this function throws a dnsLookupError exception it means that the domain name wasn't able to be resolved properly.</exception>
     public bool DownloadFile(string fileDownloadURL, string localFileName, bool throwExceptionIfLocalFileExists, bool throwExceptionIfError = true)
     {
-        FileStream fileWriteStream = null;
-        System.Net.HttpWebRequest httpWebRequest = null;
-        currentFileSize = 0;
-        double amountDownloaded;
-
-        try
+        using (FileStream fileWriteStream = new FileStream(localFileName, FileMode.Create))
         {
-            if (urlPreProcessor != null) fileDownloadURL = urlPreProcessor(fileDownloadURL);
-            lastAccessedURL = fileDownloadURL;
+            System.Net.HttpWebRequest httpWebRequest = null;
+            currentFileSize = 0;
+            double amountDownloaded;
 
-            if (File.Exists(localFileName))
+            try
             {
-                if (throwExceptionIfLocalFileExists)
+                if (urlPreProcessor != null) fileDownloadURL = urlPreProcessor(fileDownloadURL);
+                lastAccessedURL = fileDownloadURL;
+
+                if (File.Exists(localFileName))
                 {
-                    lastException = new LocalFileAlreadyExistsException(string.Format("The local file found at {0}{1}{0} already exists.", "\"", localFileName));
-                    throw lastException;
+                    if (throwExceptionIfLocalFileExists)
+                    {
+                        lastException = new LocalFileAlreadyExistsException(string.Format("The local file found at {0}{1}{0} already exists.", "\"", localFileName));
+                        throw lastException;
+                    }
+                    else File.Delete(localFileName);
                 }
-                else File.Delete(localFileName);
+
+                // We create a new data buffer to hold the stream of data from the web server.
+                byte[] dataBuffer = new byte[intDownloadBufferSize + 1];
+
+                httpWebRequest = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(fileDownloadURL);
+
+                ConfigureProxy(ref httpWebRequest);
+                AddParametersToWebRequest(ref httpWebRequest);
+
+                System.Net.WebResponse webResponse = httpWebRequest.GetResponse();
+                // We now get the web response.
+                CaptureSSLInfo(fileDownloadURL, ref httpWebRequest);
+
+                // Gets the size of the remote file on the web server.
+                remoteFileSize = webResponse.ContentLength;
+
+                Stream responseStream = webResponse.GetResponseStream();
+                // Gets the response stream.
+
+                long lngBytesReadFromInternet = responseStream.Read(dataBuffer, 0, dataBuffer.Length);
+                // Reads some data from the HTTP stream into our data buffer.
+
+                // We keep looping until all of the data has been downloaded.
+                while (lngBytesReadFromInternet != 0)
+                {
+                    // We calculate the current file size by adding the amount of data that we've so far
+                    // downloaded from the server repeatedly to a variable called "currentFileSize".
+                    currentFileSize += lngBytesReadFromInternet;
+
+                    fileWriteStream.Write(dataBuffer, 0, (int)lngBytesReadFromInternet);
+                    // Writes the data directly to disk.
+
+                    amountDownloaded = currentFileSize / remoteFileSize * 100;
+                    httpDownloadProgressPercentage = (short)Math.Round(amountDownloaded, 0);
+                    // Update the download percentage value.
+                    DownloadStatusUpdateInvoker();
+
+                    lngBytesReadFromInternet = responseStream.Read(dataBuffer, 0, dataBuffer.Length);
+                    // Reads more data into our data buffer.
+                }
+
+                if (downloadStatusUpdaterThread != null & boolRunDownloadStatusUpdatePluginInSeparateThread)
+                {
+                    downloadStatusUpdaterThread.Abort();
+                    downloadStatusUpdaterThread = null;
+                }
+
+                AbortDownloadStatusUpdaterThread();
+
+                return true;
             }
-
-            // We create a new data buffer to hold the stream of data from the web server.
-            byte[] dataBuffer = new byte[intDownloadBufferSize + 1];
-
-            httpWebRequest = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(fileDownloadURL);
-
-            ConfigureProxy(ref httpWebRequest);
-            AddParametersToWebRequest(ref httpWebRequest);
-
-            System.Net.WebResponse webResponse = httpWebRequest.GetResponse();
-            // We now get the web response.
-            CaptureSSLInfo(fileDownloadURL, ref httpWebRequest);
-
-            // Gets the size of the remote file on the web server.
-            remoteFileSize = webResponse.ContentLength;
-
-            Stream responseStream = webResponse.GetResponseStream();
-            // Gets the response stream.
-            fileWriteStream = new FileStream(localFileName, FileMode.Create);
-            // Creates a file write stream.
-
-            long lngBytesReadFromInternet = responseStream.Read(dataBuffer, 0, dataBuffer.Length);
-            // Reads some data from the HTTP stream into our data buffer.
-
-            // We keep looping until all of the data has been downloaded.
-            while (lngBytesReadFromInternet != 0)
+            catch (System.Threading.ThreadAbortException)
             {
-                // We calculate the current file size by adding the amount of data that we've so far
-                // downloaded from the server repeatedly to a variable called "currentFileSize".
-                currentFileSize += lngBytesReadFromInternet;
-
-                fileWriteStream.Write(dataBuffer, 0, (int)lngBytesReadFromInternet);
-                // Writes the data directly to disk.
-
-                amountDownloaded = currentFileSize / remoteFileSize * 100;
-                httpDownloadProgressPercentage = (short)Math.Round(amountDownloaded, 0);
-                // Update the download percentage value.
-                DownloadStatusUpdateInvoker();
-
-                lngBytesReadFromInternet = responseStream.Read(dataBuffer, 0, dataBuffer.Length);
-                // Reads more data into our data buffer.
-            }
-
-            fileWriteStream.Dispose();
-            // Disposes the file stream.
-
-            if (downloadStatusUpdaterThread != null & boolRunDownloadStatusUpdatePluginInSeparateThread)
-            {
-                downloadStatusUpdaterThread.Abort();
-                downloadStatusUpdaterThread = null;
-            }
-
-            AbortDownloadStatusUpdaterThread();
-
-            return true;
-        }
-        catch (System.Threading.ThreadAbortException)
-        {
-            AbortDownloadStatusUpdaterThread();
-            httpWebRequest?.Abort();
-            fileWriteStream?.Dispose(); // Disposes the file stream.
-            return false;
-        }
-        catch (Exception ex)
-        {
-            AbortDownloadStatusUpdaterThread();
-
-            lastException = ex;
-            if (fileWriteStream != null)
-            {
-                fileWriteStream.Close();
-                // Closes the file stream.
-                fileWriteStream.Dispose();
-                // Disposes the file stream.
-            }
-
-            if (!throwExceptionIfError) return false;
-
-            if (customErrorHandler != null)
-            {
-                customErrorHandler.DynamicInvoke(ex, this);
-                // Since we handled the exception with an injected custom error handler, we can now exit the function with the return of a False value.
+                AbortDownloadStatusUpdaterThread();
+                httpWebRequest?.Abort();
                 return false;
             }
-
-            if (ex is System.Net.WebException)
+            catch (Exception ex)
             {
-                System.Net.WebException ex2 = (System.Net.WebException)ex;
+                AbortDownloadStatusUpdaterThread();
 
-                if (ex2.Status == System.Net.WebExceptionStatus.ProtocolError)
+                lastException = ex;
+
+                if (!throwExceptionIfError) return false;
+
+                if (customErrorHandler != null)
                 {
-                    throw HandleWebExceptionProtocolError(fileDownloadURL, ex2);
-                }
-                else if (ex2.Status == System.Net.WebExceptionStatus.TrustFailure)
-                {
-                    lastException = new SSLErrorException("There was an error establishing an SSL connection.", ex2);
-                    throw lastException;
-                }
-                else if (ex2.Status == System.Net.WebExceptionStatus.NameResolutionFailure)
-                {
-                    string strDomainName = System.Text.RegularExpressions.Regex.Match(lastAccessedURL, "(?:http(?:s){0,1}://){0,1}(.*)/", System.Text.RegularExpressions.RegexOptions.Singleline).Groups[1].Value;
-                    lastException = new DNSLookupError(string.Format("There was an error while looking up the DNS records for the domain name {0}{1}{0}.", "\"", strDomainName), ex2);
-                    throw lastException;
+                    customErrorHandler.DynamicInvoke(ex, this);
+                    // Since we handled the exception with an injected custom error handler, we can now exit the function with the return of a False value.
+                    return false;
                 }
 
-                lastException = new System.Net.WebException(ex.Message, ex2);
-                throw lastException;
+                if (ex is System.Net.WebException)
+                {
+                    System.Net.WebException ex2 = (System.Net.WebException)ex;
+
+                    if (ex2.Status == System.Net.WebExceptionStatus.ProtocolError)
+                    {
+                        throw HandleWebExceptionProtocolError(fileDownloadURL, ex2);
+                    }
+                    else if (ex2.Status == System.Net.WebExceptionStatus.TrustFailure)
+                    {
+                        lastException = new SSLErrorException("There was an error establishing an SSL connection.", ex2);
+                        throw lastException;
+                    }
+                    else if (ex2.Status == System.Net.WebExceptionStatus.NameResolutionFailure)
+                    {
+                        string strDomainName = System.Text.RegularExpressions.Regex.Match(lastAccessedURL, "(?:http(?:s){0,1}://){0,1}(.*)/", System.Text.RegularExpressions.RegexOptions.Singleline).Groups[1].Value;
+                        lastException = new DNSLookupError(string.Format("There was an error while looking up the DNS records for the domain name {0}{1}{0}.", "\"", strDomainName), ex2);
+                        throw lastException;
+                    }
+
+                    lastException = new System.Net.WebException(ex.Message, ex2);
+                    throw lastException;
+                }
+
+                return false;
             }
-
-            return false;
         }
     }
 
