@@ -1430,8 +1430,6 @@ public class HTTPHelper
                     FileInfo fileInfo = default;
                     FormFile formFileObjectInstance = null;
                     byte[] bytes = null;
-                    byte[] buffer = null;
-                    FileStream fileStream = default;
                     string data = null;
 
                     foreach (KeyValuePair<string, object> entry in postData)
@@ -1458,12 +1456,9 @@ public class HTTPHelper
                             bytes = System.Text.Encoding.UTF8.GetBytes(header);
                             httpRequestWriter.Write(bytes, 0, bytes.Length);
 
-                            fileStream = new FileStream(formFileObjectInstance.LocalFilePath, FileMode.Open);
-                            buffer = new byte[32769];
-
-                            while (fileStream.Read(buffer, 0, buffer.Length) != 0)
+                            using (FileStream fileStream = new FileStream(formFileObjectInstance.LocalFilePath, FileMode.Open))
                             {
-                                httpRequestWriter.Write(buffer, 0, buffer.Length);
+                                fileStream.CopyTo(httpRequestWriter);
                             }
                         }
                         else
