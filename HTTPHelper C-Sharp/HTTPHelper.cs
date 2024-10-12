@@ -966,10 +966,6 @@ public class HTTPHelper
 
             return false;
         }
-        finally
-        {
-            memStream?.Dispose(); // Disposes the file stream.
-        }
     }
 
     /// <summary>Gets the file size of a file on a remote HTTP server..</summary>
