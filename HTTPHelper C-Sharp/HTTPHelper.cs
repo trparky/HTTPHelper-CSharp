@@ -543,7 +543,7 @@ public class HTTPHelper
             throw lastException;
         }
 
-        if (postData.MyContainsKey(strName) & throwExceptionIfDataAlreadyExists)
+        if (postData.ContainsKey(strName) & throwExceptionIfDataAlreadyExists)
         {
             lastException = new DataAlreadyExistsException(string.Format("The POST data key named {0}{1}{0} already exists in the POST data.", "\"", strName));
             throw lastException;
@@ -567,7 +567,7 @@ public class HTTPHelper
             throw lastException;
         }
 
-        if (getData.MyContainsKey(strName) & throwExceptionIfDataAlreadyExists)
+        if (getData.ContainsKey(strName) & throwExceptionIfDataAlreadyExists)
         {
             lastException = new DataAlreadyExistsException(string.Format("The GET data key named {0}{1}{0} already exists in the GET data.", "\"", strName));
             throw lastException;
@@ -656,7 +656,7 @@ public class HTTPHelper
     /// <returns></returns>
     public bool DoesGETDataExist(string strName)
     {
-        return getData.MyContainsKey(strName);
+        return getData.ContainsKey(strName);
     }
 
     /// <summary>Checks to see if the POST data key exists in this POST data.</summary>
@@ -664,7 +664,7 @@ public class HTTPHelper
     /// <returns></returns>
     public bool DoesPOSTDataExist(string strName)
     {
-        return postData.MyContainsKey(strName);
+        return postData.ContainsKey(strName);
     }
 
     /// <summary>Checks to see if an additional HTTP Request Header has been added to the Class.</summary>
@@ -672,7 +672,7 @@ public class HTTPHelper
     /// <returns>Boolean value; True if found, False if not found.</returns>
     public bool DoesAdditionalHeaderExist(string strHeaderName)
     {
-        return additionalHTTPHeaders.MyContainsKey(strHeaderName.ToLower());
+        return additionalHTTPHeaders.ContainsKey(strHeaderName.ToLower());
     }
 
     /// <summary>Checks to see if a cookie has been added to the Class.</summary>
@@ -680,7 +680,7 @@ public class HTTPHelper
     /// <returns>Boolean value; True if found, False if not found.</returns>
     public bool DoesCookieExist(string strCookieName)
     {
-        return httpCookies.MyContainsKey(strCookieName.ToLower());
+        return httpCookies.ContainsKey(strCookieName.ToLower());
     }
 
     /// <summary>This adds a file to be uploaded to your POST data.</summary>
@@ -703,7 +703,7 @@ public class HTTPHelper
             lastException = new FileNotFoundException("Local file not found.", strLocalFilePath);
             throw lastException;
         }
-        else if (postData.MyContainsKey(strFormName))
+        else if (postData.ContainsKey(strFormName))
         {
             if (throwExceptionIfItemAlreadyExists)
             {
@@ -1706,50 +1706,5 @@ public class HTTPHelper
         else result = "(None)";
 
         return result;
-    }
-}
-
-internal static class DictionaryExtensions
-{
-    public static bool MyContainsKey(this Dictionary<string, string> haystack, string needle)
-    {
-        if (string.IsNullOrEmpty(needle))
-        {
-            throw new ArgumentException($"'{nameof(needle)}' cannot be null or empty.", nameof(needle));
-        }
-        if (haystack is null)
-        {
-            throw new ArgumentNullException(nameof(haystack));
-        }
-
-        return haystack.Keys.Any(key => key.Trim().Equals(needle, StringComparison.OrdinalIgnoreCase));
-    }
-
-    public static bool MyContainsKey(this Dictionary<string, object> haystack, string needle)
-    {
-        if (string.IsNullOrEmpty(needle))
-        {
-            throw new ArgumentException($"'{nameof(needle)}' cannot be null or empty.", nameof(needle));
-        }
-        if (haystack is null)
-        {
-            throw new ArgumentNullException(nameof(haystack));
-        }
-
-        return haystack.Keys.Any(key => key.Trim().Equals(needle, StringComparison.OrdinalIgnoreCase));
-    }
-
-    public static bool MyContainsKey(this Dictionary<string, CookieDetails> haystack, string needle)
-    {
-        if (string.IsNullOrEmpty(needle))
-        {
-            throw new ArgumentException($"'{nameof(needle)}' cannot be null or empty.", nameof(needle));
-        }
-        if (haystack is null)
-        {
-            throw new ArgumentNullException(nameof(haystack));
-        }
-
-        return haystack.Keys.Any(key => key.Trim().Equals(needle, StringComparison.OrdinalIgnoreCase));
     }
 }
