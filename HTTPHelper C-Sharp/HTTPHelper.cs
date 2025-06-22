@@ -142,10 +142,14 @@ class Credentials
     public string strPassword;
 }
 
+// Strongly typed delegates
+public delegate void DownloadStatusUpdaterDelegate(DownloadStatusDetails downloadStatusUpdater);
+public delegate void CustomErrorHandlerDelegate(Exception ex, HTTPHelper thisInstance);
+
 /// <summary>Allows you to easily POST and upload files to a remote HTTP server without you, the programmer, knowing anything about how it all works. This class does it all for you. It handles adding a User Agent String, additional HTTP Request Headers, string data to your HTTP POST data, and files to be uploaded in the HTTP POST data.</summary>
 public class HTTPHelper
 {
-    private const string classVersion = "1.339";
+    private const string classVersion = "1.340";
     private string strUserAgentString = null;
     private bool boolUseProxy = false;
     private bool boolUseSystemProxy = true;
@@ -174,12 +178,12 @@ public class HTTPHelper
     private Credentials credentials;
     private System.Security.Cryptography.X509Certificates.X509Certificate2 sslCertificate;
     private Func<string, string> urlPreProcessor;
-    private Delegate customErrorHandler;
+    private CustomErrorHandlerDelegate customErrorHandler;
 
     private const string strLF = "\n";
     private const string strCRLF = "\r\n";
 
-    private Delegate downloadStatusUpdater;
+    private DownloadStatusUpdaterDelegate downloadStatusUpdater;
 
     public struct RemoteFileStats
     {
@@ -210,7 +214,7 @@ public class HTTPHelper
     /// OR A C# Example...
     /// httpHelper.setCustomErrorHandler((Exception ex, httpHelper classInstance) => { }
     /// </example>
-    public Delegate SetCustomErrorHandler
+    public CustomErrorHandlerDelegate SetCustomErrorHandler
     {
         set { customErrorHandler = value; }
     }
@@ -321,7 +325,7 @@ public class HTTPHelper
     /// OR A C# Example...
     /// httpHelper.setDownloadStatusUpdateRoutine((downloadStatusDetails downloadStatusDetails) => { })
     /// </example>
-    public Delegate SetDownloadStatusUpdateRoutine
+    public DownloadStatusUpdaterDelegate SetDownloadStatusUpdateRoutine
     {
         set { downloadStatusUpdater = value; }
     }
@@ -794,7 +798,7 @@ public class HTTPHelper
         try
         {
         beginAgain:
-            downloadStatusUpdater.DynamicInvoke(downloadStatusDetails);
+            downloadStatusUpdater(downloadStatusDetails);
             System.Threading.Thread.Sleep(_intDownloadThreadSleepTime);
             goto beginAgain;
         }
@@ -831,7 +835,7 @@ public class HTTPHelper
                     downloadStatusUpdaterThread.Start();
                 }
             }
-            else downloadStatusUpdater.DynamicInvoke(downloadStatusDetails);
+            else downloadStatusUpdater(downloadStatusDetails);
         }
     }
 
@@ -935,7 +939,7 @@ public class HTTPHelper
 
             if (customErrorHandler != null)
             {
-                customErrorHandler.DynamicInvoke(ex, this);
+                customErrorHandler(ex, this);
                 // Since we handled the exception with an injected custom error handler, we can now exit the function with the return of a False value.
                 return false;
             }
@@ -1016,7 +1020,7 @@ public class HTTPHelper
 
             if (customErrorHandler != null)
             {
-                customErrorHandler.DynamicInvoke(ex, this);
+                customErrorHandler(ex, this);
                 // Since we handled the exception with an injected custom error handler, we can now exit the function with the return of a False value.
                 return false;
             }
@@ -1150,7 +1154,7 @@ public class HTTPHelper
 
                 if (customErrorHandler != null)
                 {
-                    customErrorHandler.DynamicInvoke(ex, this);
+                    customErrorHandler(ex, this);
                     // Since we handled the exception with an injected custom error handler, we can now exit the function with the return of a False value.
                     return false;
                 }
@@ -1244,7 +1248,7 @@ public class HTTPHelper
 
             if (customErrorHandler != null)
             {
-                customErrorHandler.DynamicInvoke(ex, this);
+                customErrorHandler(ex, this);
                 // Since we handled the exception with an injected custom error handler, we can now exit the function with the return of a False value.
                 return false;
             }
@@ -1335,7 +1339,7 @@ public class HTTPHelper
 
             if (customErrorHandler != null)
             {
-                customErrorHandler.DynamicInvoke(ex, this);
+                customErrorHandler(ex, this);
                 // Since we handled the exception with an injected custom error handler, we can now exit the function with the return of a False value.
                 return false;
             }
@@ -1489,7 +1493,7 @@ public class HTTPHelper
 
             if (customErrorHandler != null)
             {
-                customErrorHandler.DynamicInvoke(ex, this);
+                customErrorHandler(ex, this);
                 // Since we handled the exception with an injected custom error handler, we can now exit the function with the return of a False value.
                 return false;
             }
