@@ -1705,7 +1705,7 @@ public class HTTPHelper
         }
         else if (size > Math.Pow(2, 50) & size <= Math.Pow(2, 60))
         {
-            result = $"{Math.Round(size / Math.Pow(2, 50), shortRoundNumber)} PBs";
+            result = $"{Math.Round(size / Math.Pow(2, 60), shortRoundNumber)} PBs";
         }
         else result = "(None)";
 
